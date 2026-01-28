@@ -1,0 +1,9 @@
+
+{
+  "name": "QuizAI - Intelligent Quiz Generator",
+  "description": "A powerful AI-driven platform to generate, customize, and take quizzes on any topic instantly using Google Gemini.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ]
+}
