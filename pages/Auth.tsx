@@ -1,8 +1,15 @@
-
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Mail, Lock, User, ArrowRight, Loader2, AlertCircle } from 'lucide-react';
-import { api } from '../services/api';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  Mail,
+  Lock,
+  User,
+  ArrowRight,
+  Loader2,
+  AlertCircle,
+} from "lucide-react";
+import { api } from "../services/api";
+import { setToken } from "@/utils/authUtils";
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
@@ -10,34 +17,43 @@ const Auth: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: ''
+    name: "",
+    email: "",
+    password: "",
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-    
+
     try {
       let userData;
       if (isLogin) {
         userData = await api.auth.login(formData.email, formData.password);
       } else {
-        userData = await api.auth.register(formData.name, formData.email, formData.password);
+        await api.auth.register(
+          formData.name,
+          formData.email,
+          formData.password,
+        );
+        setIsLogin(true);
+        return;
       }
-      
+
       // Store token separately for the interceptor
-      if (userData.token) {
-        localStorage.setItem('token', userData.token);
+      if (userData.data.accessToken) {
+        setToken(userData.data.accessToken, userData.data.refreshToken);
+        console.log("User: ", JSON.stringify(userData.data.user));
+        localStorage.setItem("user", JSON.stringify(userData.data.user));
       }
-      
-      localStorage.setItem('user', JSON.stringify(userData));
-      navigate('/generate');
+      navigate("/");
     } catch (err: any) {
       console.error(err);
-      setError(err.response?.data?.message || 'Authentication failed. Please check your credentials.');
+      setError(
+        err.response?.data?.message ||
+          "Authentication failed. Please check your credentials.",
+      );
     } finally {
       setLoading(false);
     }
@@ -47,10 +63,16 @@ const Auth: React.FC = () => {
     <div className="min-h-screen pt-24 pb-12 px-4 flex flex-col justify-center items-center bg-gray-50">
       <div className="max-w-md w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
         <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white text-center">
-          <h2 className="text-3xl font-bold mb-2">{isLogin ? 'Welcome Back' : 'Create Account'}</h2>
-          <p className="text-blue-100">{isLogin ? 'Sign in to start generating quizzes' : 'Join the community of quiz masters'}</p>
+          <h2 className="text-3xl font-bold mb-2">
+            {isLogin ? "Welcome Back" : "Create Account"}
+          </h2>
+          <p className="text-blue-100">
+            {isLogin
+              ? "Sign in to start generating quizzes"
+              : "Join the community of quiz masters"}
+          </p>
         </div>
-        
+
         <div className="p-8">
           {error && (
             <div className="mb-6 bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl flex items-center space-x-3 text-sm font-medium">
@@ -68,12 +90,14 @@ const Auth: React.FC = () => {
                   required
                   placeholder="Full Name"
                   value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
                   className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-100 focus:border-blue-500 outline-none transition-all"
                 />
               </div>
             )}
-            
+
             <div className="relative">
               <Mail className="absolute left-3 top-3.5 w-5 h-5 text-gray-400" />
               <input
@@ -81,7 +105,9 @@ const Auth: React.FC = () => {
                 required
                 placeholder="Email Address"
                 value={formData.email}
-                onChange={(e) => setFormData({...formData, email: e.target.value})}
+                onChange={(e) =>
+                  setFormData({ ...formData, email: e.target.value })
+                }
                 className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-100 focus:border-blue-500 outline-none transition-all"
               />
             </div>
@@ -93,7 +119,9 @@ const Auth: React.FC = () => {
                 required
                 placeholder="Password"
                 value={formData.password}
-                onChange={(e) => setFormData({...formData, password: e.target.value})}
+                onChange={(e) =>
+                  setFormData({ ...formData, password: e.target.value })
+                }
                 className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-100 focus:border-blue-500 outline-none transition-all"
               />
             </div>
@@ -107,7 +135,7 @@ const Auth: React.FC = () => {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  <span>{isLogin ? 'Sign In' : 'Create Account'}</span>
+                  <span>{isLogin ? "Sign In" : "Create Account"}</span>
                   <ArrowRight className="w-5 h-5" />
                 </>
               )}
@@ -123,7 +151,7 @@ const Auth: React.FC = () => {
               }}
               className="ml-1 text-blue-600 font-bold hover:underline"
             >
-              {isLogin ? 'Sign Up' : 'Log In'}
+              {isLogin ? "Sign Up" : "Log In"}
             </button>
           </div>
         </div>

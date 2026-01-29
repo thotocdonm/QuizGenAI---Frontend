@@ -1,15 +1,20 @@
-
-import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { BrainCircuit, LogOut, User } from 'lucide-react';
+import React, { useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { BrainCircuit, LogOut, User } from "lucide-react";
+import { clearToken } from "@/utils/authUtils";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
-  const user = JSON.parse(localStorage.getItem('user') || 'null');
+  const user = JSON.parse(localStorage.getItem("user") || "null");
+
+  useEffect(() => {
+    console.log(user);
+  }, [user]);
 
   const handleLogout = () => {
-    localStorage.removeItem('user');
-    navigate('/');
+    clearToken();
+    localStorage.removeItem("user");
+    navigate("/");
   };
 
   return (
@@ -26,15 +31,27 @@ const Navbar: React.FC = () => {
           </Link>
 
           <div className="hidden md:flex items-center space-x-8">
-            <Link to="/" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Home</Link>
-            <Link to="/generate" className="text-gray-600 hover:text-blue-600 font-medium transition-colors">Create Quiz</Link>
+            <Link
+              to="/"
+              className="text-gray-600 hover:text-blue-600 font-medium transition-colors"
+            >
+              Home
+            </Link>
+            <Link
+              to="/generate"
+              className="text-gray-600 hover:text-blue-600 font-medium transition-colors"
+            >
+              Create Quiz
+            </Link>
             {user ? (
               <div className="flex items-center space-x-4">
                 <div className="flex items-center space-x-2 px-3 py-1 bg-gray-100 rounded-full">
                   <User className="w-4 h-4 text-gray-500" />
-                  <span className="text-sm font-medium text-gray-700">{user.name}</span>
+                  <span className="text-sm font-medium text-gray-700">
+                    {user.name}
+                  </span>
                 </div>
-                <button 
+                <button
                   onClick={handleLogout}
                   className="flex items-center space-x-1 text-gray-600 hover:text-red-600 font-medium transition-colors"
                 >
@@ -43,8 +60,8 @@ const Navbar: React.FC = () => {
                 </button>
               </div>
             ) : (
-              <Link 
-                to="/auth" 
+              <Link
+                to="/auth"
                 className="bg-blue-600 text-white px-5 py-2 rounded-lg font-medium hover:bg-blue-700 transition-all shadow-md active:scale-95"
               >
                 Sign In
