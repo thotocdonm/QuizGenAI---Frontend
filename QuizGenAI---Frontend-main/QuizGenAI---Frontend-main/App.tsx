@@ -19,7 +19,8 @@ const App: React.FC = () => {
             <Route path="/generate" element={<Generator />} />
             <Route path="/auth" element={<Auth />} />
             {/* Thêm các Route mới vào đây */}
-            <Route path="/quiz/:id" element={<QuizDetail />} />
+         
+            <Route path="/quiz/:id/edit" element={<QuizDetail />} />
             <Route path="/generating" element={<QuizGenerating />} />
           </Routes>
         </main>
