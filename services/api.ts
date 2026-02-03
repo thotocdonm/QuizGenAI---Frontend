@@ -1,4 +1,3 @@
-
 import { ApiResponse } from '@/types/apiResponse';
 import { LoginResponse, User } from '@/types/auth';
 import { clearToken, getAccessToken, getRefreshToken, setToken } from '@/utils/authUtils';
@@ -8,7 +7,7 @@ import axios from 'axios';
  * API Configuration
  * The base URL is now pulled from the .env file via process.env
  */
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 
 // Create axios instance
@@ -88,13 +87,21 @@ export const api = {
   },
 
   quiz: {
+    // Cập nhật endpoint từ /quizzes thành /quiz để khớp với backend
     generate: async (data: any) => {
-      const response = await axiosInstance.post('/quizzes/generate', data);
+      // axiosInstance sẽ tự động thêm Authorization: Bearer <token> nhờ Interceptor ở trên
+      const response = await axiosInstance.post('/quiz/generate', data);
+      return response.data;
+    },
+
+    // Thêm hàm lấy chi tiết Quiz theo ID để dùng cho trang QuizDetail
+    getById: async (id: string) => {
+      const response = await axiosInstance.get(`/quiz/${id}`);
       return response.data;
     },
 
     getQuizzes: async () => {
-      const response = await axiosInstance.get('/quizzes');
+      const response = await axiosInstance.get('/quiz');
       return response.data;
     }
   }

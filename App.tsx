@@ -4,6 +4,9 @@ import Navbar from "./components/Navbar";
 import Landing from "./pages/Landing";
 import Generator from "./pages/Generator";
 import Auth from "./pages/Auth";
+// Thêm import cho các trang mới
+import QuizDetail from "./pages/QuizDetail";
+import QuizGenerating from "./pages/QuizGenerating";
 
 const App: React.FC = () => {
   return (
@@ -15,6 +18,10 @@ const App: React.FC = () => {
             <Route path="/" element={<Landing />} />
             <Route path="/generate" element={<Generator />} />
             <Route path="/auth" element={<Auth />} />
+            {/* Thêm các Route mới vào đây */}
+         
+            <Route path="/quiz/:id/edit" element={<QuizDetail />} />
+            <Route path="/generating" element={<QuizGenerating />} />
           </Routes>
         </main>
 
