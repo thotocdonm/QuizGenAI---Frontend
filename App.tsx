@@ -4,6 +4,12 @@ import Navbar from "./components/Navbar";
 import Landing from "./pages/Landing";
 import Generator from "./pages/Generator";
 import Auth from "./pages/Auth";
+// Thêm import cho các trang mới
+import QuizDetail from "./pages/QuizDetail";
+import QuizGenerating from "./pages/QuizGenerating";
+import ProtectedRoute from "./components/ProtectedRoute"; // 1. Import gác cổng
+
+
 
 const App: React.FC = () => {
   return (
@@ -13,8 +19,36 @@ const App: React.FC = () => {
         <main>
           <Routes>
             <Route path="/" element={<Landing />} />
-            <Route path="/generate" element={<Generator />} />
+            
             <Route path="/auth" element={<Auth />} />
+            {/* Thêm các Route mới vào đây */}
+         
+
+            {/* 2. Bọc các trang cần bảo vệ vào ProtectedRoute */}
+            <Route 
+              path="/generate" 
+              element={
+                <ProtectedRoute>
+                  <Generator />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/quiz/:id" 
+              element={
+                <ProtectedRoute>
+                  <QuizDetail />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/generating" 
+              element={
+                <ProtectedRoute>
+                  <QuizGenerating />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
         </main>
 
