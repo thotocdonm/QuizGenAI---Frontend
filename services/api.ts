@@ -1,20 +1,25 @@
-import { ApiResponse } from '@/types/apiResponse';
-import { LoginResponse, User } from '@/types/auth';
-import { clearToken, getAccessToken, getRefreshToken, setToken } from '@/utils/authUtils';
-import axios from 'axios';
+import { ApiResponse } from "@/types/apiResponse";
+import { LoginResponse, User } from "@/types/auth";
+import {
+  clearToken,
+  getAccessToken,
+  getRefreshToken,
+  setToken,
+} from "@/utils/authUtils";
+import axios from "axios";
 
 /**
  * API Configuration
  * The base URL is now pulled from the .env file via process.env
  */
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
-
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
 
 // Create axios instance
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,
   headers: {
-    'Content-Type': 'application/json',
+    "Content-Type": "application/json",
   },
 });
 
@@ -29,7 +34,7 @@ axiosInstance.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response Interceptor: Handle common errors like 401
@@ -44,7 +49,7 @@ axiosInstance.interceptors.response.use(
       const refreshToken = getRefreshToken();
       if (!refreshToken) {
         clearToken();
-        window.location.href = '#/auth';
+        window.location.href = "#/auth";
         return Promise.reject(error);
       }
 
@@ -57,52 +62,64 @@ axiosInstance.interceptors.response.use(
 
         setToken(accessToken, newRefreshToken);
 
-        originalRequest.headers.Authorization =
-          `Bearer ${accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
 
         return axiosInstance(originalRequest);
       } catch (refreshError) {
         clearToken();
-        window.location.href = '#/auth';
+        window.location.href = "#/auth";
         return Promise.reject(refreshError);
       }
     }
 
     return Promise.reject(error);
-  }
+  },
 );
 
 export const api = {
   auth: {
-    login: async (email: string, password: string): Promise<ApiResponse<LoginResponse>> => {
-      const response = await axiosInstance.post<ApiResponse<LoginResponse>>('/auth/login', { email, password });
+    login: async (
+      email: string,
+      password: string,
+    ): Promise<ApiResponse<LoginResponse>> => {
+      const response = await axiosInstance.post<ApiResponse<LoginResponse>>(
+        "/auth/login",
+        { email, password },
+      );
       setToken(response.data.data.accessToken, response.data.data.refreshToken);
       return response.data;
     },
 
-    register: async (name: string, email: string, password: string): Promise<ApiResponse<User>> => {
-      const response = await axiosInstance.post<ApiResponse<User>>('/auth/register', { fullName: name, email, password });
+    register: async (
+      name: string,
+      email: string,
+      password: string,
+    ): Promise<ApiResponse<User>> => {
+      const response = await axiosInstance.post<ApiResponse<User>>(
+        "/auth/register",
+        { fullName: name, email, password },
+      );
       return response.data;
-    }
+    },
   },
 
   quiz: {
     // Cập nhật endpoint từ /quizzes thành /quiz để khớp với backend
     generate: async (data: any) => {
       // axiosInstance sẽ tự động thêm Authorization: Bearer <token> nhờ Interceptor ở trên
-      const response = await axiosInstance.post('/quiz/generate', data);
+      const response = await axiosInstance.post("/quizzes/generate", data);
       return response.data;
     },
 
     // Thêm hàm lấy chi tiết Quiz theo ID để dùng cho trang QuizDetail
     getById: async (id: string) => {
-      const response = await axiosInstance.get(`/quiz/${id}`);
+      const response = await axiosInstance.get(`/quizzes/${id}`);
       return response.data;
     },
 
     getQuizzes: async () => {
-      const response = await axiosInstance.get('/quiz');
+      const response = await axiosInstance.get("/quizzes");
       return response.data;
-    }
-  }
+    },
+  },
 };
