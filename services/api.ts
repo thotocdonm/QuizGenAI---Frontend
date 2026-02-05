@@ -107,18 +107,22 @@ export const api = {
     // Cập nhật endpoint từ /quizzes thành /quiz để khớp với backend
     generate: async (data: any) => {
       // axiosInstance sẽ tự động thêm Authorization: Bearer <token> nhờ Interceptor ở trên
-      const response = await axiosInstance.post("/quizzes/generate", data);
+      const response = await axiosInstance.post("/quiz/generate", data);
       return response.data;
     },
 
     // Thêm hàm lấy chi tiết Quiz theo ID để dùng cho trang QuizDetail
     getById: async (id: string) => {
-      const response = await axiosInstance.get(`/quizzes/${id}`);
+      const response = await axiosInstance.get(`/quiz/${id}`);
+      return response.data;
+    },
+    update: async (id: string, data: any) => {
+      const response = await axiosInstance.put(`/quiz/${id}`, data);
       return response.data;
     },
 
     getQuizzes: async () => {
-      const response = await axiosInstance.get("/quizzes");
+      const response = await axiosInstance.get("/quiz");
       return response.data;
     },
   },

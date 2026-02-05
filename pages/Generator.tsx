@@ -40,15 +40,32 @@ const Generator: React.FC = () => {
     try {
       // Gọi API với cấu trúc body: { title, topic, numQuestions, difficulty }
       const response = await api.quiz.generate(formData);
+      const success = response?.success === true;
+      const quizId = success ? response.data?._id : null;
+      navigate("/generating", {
+        state: {
+          success,
+          quizId,
+          errorMessage: success ? null : "Tạo quiz thất bại.",
+        },
+      });
 
-      if (response && response.success === "true") {
-        const quizId = response.data._id;
-        // Điều hướng sang trang loading hoặc trang chi tiết theo cấu trúc URL mới /quiz/:id/edit
-        navigate(`/quiz/${quizId}/edit`);
-      }
+      // if (response && response.success === true) {
+      //   const quizId = response.data._id;
+      // Điều hướng sang trang loading hoặc trang chi tiết theo cấu trúc URL mới /quiz/:id/edit
+      //navigate(`/quiz/${quizId}/edit`);
+      // }
     } catch (err: any) {
       console.error("Lỗi tạo Quiz:", err);
       setError(err.response?.data?.message || "Không thể kết nối đến máy chủ.");
+      navigate("/generating", {
+        state: {
+          success: false,
+          quizId: null,
+          errorMessage:
+            err.response?.data?.message || "Không thể kết nối đến máy chủ.",
+        },
+      });
     } finally {
       setLoading(false);
     }
@@ -85,6 +102,8 @@ const Generator: React.FC = () => {
                 required
                 value={formData.title}
                 onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
                 placeholder="Ví dụ: Kiểm tra Toán cơ bản"
                 className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-medium"
               />
