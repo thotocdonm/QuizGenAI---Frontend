@@ -111,9 +111,19 @@ export const api = {
       return response.data;
     },
 
-    // Thêm hàm lấy chi tiết Quiz theo ID để dùng cho trang QuizDetail
+    // Thêm hàm lấy chi tiết Quiz theo ID để dùng cho trang QuizPlay
     getById: async (id: string) => {
       const response = await axiosInstance.get(`/quiz/${id}`);
+      return response.data;
+    },
+    getPublic: async (id: string) => {
+      const response = await axiosInstance.get(`/quiz/public/${id}`);
+      return response.data;
+    },
+    submit: async (id: string, answers: any) => {
+      const response = await axiosInstance.post(`/quiz/${id}/submit`, {
+        answers,
+      });
       return response.data;
     },
     update: async (id: string, data: any) => {

@@ -6,7 +6,7 @@ import Generator from "./pages/Generator";
 import QuizEdit from "./pages/QuizEdit";
 import Auth from "./pages/Auth";
 // Thêm import cho các trang mới
-import QuizDetail from "./pages/QuizDetail";
+import QuizPlay from "./pages/QuizPlay";
 import QuizGenerating from "./pages/QuizGenerating";
 import ProtectedRoute from "./components/ProtectedRoute"; // 1. Import gác cổng
 
@@ -43,7 +43,7 @@ const App: React.FC = () => {
               path="/quiz/:id"
               element={
                 <ProtectedRoute>
-                  <QuizDetail />
+                  <QuizPlay />
                 </ProtectedRoute>
               }
             />

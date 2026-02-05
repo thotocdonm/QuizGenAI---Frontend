@@ -37,6 +37,7 @@ const Generator: React.FC = () => {
     if (!validateForm()) return;
 
     setLoading(true);
+    setError(null);
     try {
       // Gọi API với cấu trúc body: { title, topic, numQuestions, difficulty }
       const response = await api.quiz.generate(formData);

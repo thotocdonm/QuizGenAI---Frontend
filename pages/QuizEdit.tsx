@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import {
   Plus,
@@ -32,14 +32,13 @@ type Quiz = {
 // =====================
 // Types (Backend shape)
 // quizController.getQuizById -> res.json(quiz) (NOT wrapped)
-// questions: { text, options, correctAnswer(index), explaination }
+// questions: { text, options, correctAnswer(index), explanation }
 // =====================
 type BackendQuestion = {
   text: string;
   options: string[];
   correctAnswer: number; // 0..3
   explanation?: string;
-  explaination?: string;
 };
 
 type BackendQuiz = {
@@ -90,7 +89,7 @@ const mapBackendQuizToUI = (bq: BackendQuiz): Quiz => {
         question: q.text ?? "",
         options,
         correctAnswer,
-        explanation: q.explanation ?? q.explaination ?? "",
+        explanation: q.explanation ?? "",
       });
     }),
   };
@@ -123,6 +122,8 @@ const QuizEdit: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState<string | null>(null);
   const [isDirty, setIsDirty] = useState(false);
+  const [shareMessage, setShareMessage] = useState<string | null>(null);
+  const shareTimerRef = useRef<number | null>(null);
   // Save / status UI
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "ok" | "err">("idle");
@@ -243,12 +244,12 @@ const QuizEdit: React.FC = () => {
   // =====================
   // Actions (save)
   // =====================
-  const handleSave = async () => {
-    if (!quiz || !id) return;
+  const handleSave = async (): Promise<boolean> => {
+    if (!quiz || !id) return false;
 
     if (errors.length > 0) {
       setSaveStatus("err");
-      return;
+      return false;
     }
     setSaving(true);
     setSaveStatus("idle");
@@ -259,8 +260,10 @@ const QuizEdit: React.FC = () => {
       setOriginalQuiz(quiz);
       setIsDirty(false);
       setSaveStatus("ok");
+      return true;
     } catch {
       setSaveStatus("err");
+      return false;
     } finally {
       setSaving(false);
     }
@@ -271,17 +274,36 @@ const QuizEdit: React.FC = () => {
     setIsDirty(false);
     setSaveStatus("idle");
   };
+  const handlePreviewClick = async () => {
+    if (!id) return;
+    if (isDirty) {
+      const shouldContinue = window.confirm(
+        "Có thay đổi chưa lưu. Bạn có muốn tiếp tục đến trang preview mà không lưu thay đổi?",
+      );
+      if (!shouldContinue) return;
+    }
+    navigate(`/quiz/${id}`, { state: { isPreview: true } });
+  };
   const handleShare = async () => {
-    const url = window.location.href;
+    const url = `${window.location.origin}/quiz/${id}`;
     try {
       if (navigator.clipboard?.writeText) {
         await navigator.clipboard.writeText(url);
       } else {
         window.prompt("Copy URL:", url);
       }
+      setShareMessage("Đã copy link!");
     } catch {
       window.prompt("Copy URL:", url);
+      setShareMessage("Chưa thể copy link này.");
     }
+    if (shareTimerRef.current) {
+      window.clearTimeout(shareTimerRef.current);
+    }
+    shareTimerRef.current = window.setTimeout(() => {
+      setShareMessage(null);
+      shareTimerRef.current = null;
+    }, 5000);
   };
   // =====================
   // UI
@@ -410,7 +432,7 @@ const QuizEdit: React.FC = () => {
               <div className="absolute top-0 left-0 w-2 h-full bg-blue-600" />
               <div className="flex items-start justify-between gap-4 mb-6">
                 <div>
-                  <p className="text-blue-600 font-bold text-xs uppercase tracking-[0.2em]">
+                  <p className="text-blue-600 font-bold text-xl tracking-[0.2em]">
                     Câu hỏi {qIndex + 1}
                   </p>
                   <p className="text-gray-400 text-xs font-bold mt-1">
@@ -586,7 +608,7 @@ const QuizEdit: React.FC = () => {
               Quay về tạo quiz
             </button>
             <button
-              onClick={() => navigate(`/quiz/${id}`)}
+              onClick={handlePreviewClick}
               className="flex items-center gap-2 bg-white border-2 border-gray-200 px-5 py-3 rounded-xl font-black text-gray-700 hover:border-emerald-600 hover:text-emerald-700 transition-all shadow-sm"
               title="Chuyển sang trang làm bài (preview)"
             >
@@ -600,6 +622,14 @@ const QuizEdit: React.FC = () => {
               Share
             </button>
           </div>
+
+          {shareMessage && (
+            <div className="flex justify-center">
+              <span className="text-sm font-bold text-emerald-700">
+                {shareMessage}
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </div>
