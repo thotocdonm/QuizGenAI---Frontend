@@ -32,23 +32,41 @@ const Generator: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Kiểm tra validation trước khi gửi
     if (!validateForm()) return;
 
     setLoading(true);
+    setError(null);
     try {
       // Gọi API với cấu trúc body: { title, topic, numQuestions, difficulty }
       const response = await api.quiz.generate(formData);
+      const success = response?.success === true;
+      const quizId = success ? response.data?._id : null;
+      navigate("/generating", {
+        state: {
+          success,
+          quizId,
+          errorMessage: success ? null : "Tạo quiz thất bại.",
+        },
+      });
 
-      if (response && response.success === "true") {
-        const quizId = response.data._id;
-        // Điều hướng sang trang loading hoặc trang chi tiết theo cấu trúc URL mới /quiz/:id/edit
-        navigate(`/quiz/${quizId}/edit`);
-      }
+      // if (response && response.success === true) {
+      //   const quizId = response.data._id;
+      // Điều hướng sang trang loading hoặc trang chi tiết theo cấu trúc URL mới /quiz/:id/edit
+      //navigate(`/quiz/${quizId}/edit`);
+      // }
     } catch (err: any) {
       console.error("Lỗi tạo Quiz:", err);
       setError(err.response?.data?.message || "Không thể kết nối đến máy chủ.");
+      navigate("/generating", {
+        state: {
+          success: false,
+          quizId: null,
+          errorMessage:
+            err.response?.data?.message || "Không thể kết nối đến máy chủ.",
+        },
+      });
     } finally {
       setLoading(false);
     }
@@ -84,7 +102,9 @@ const Generator: React.FC = () => {
                 type="text"
                 required
                 value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, title: e.target.value })
+                }
                 placeholder="Ví dụ: Kiểm tra Toán cơ bản"
                 className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-medium"
               />
@@ -99,7 +119,9 @@ const Generator: React.FC = () => {
               <textarea
                 required
                 value={formData.topic}
-                onChange={(e) => setFormData({ ...formData, topic: e.target.value })}
+                onChange={(e) =>
+                  setFormData({ ...formData, topic: e.target.value })
+                }
                 placeholder="Dán nội dung bài học hoặc mô tả chủ đề tại đây (ít nhất 10 ký tự)..."
                 className="w-full h-40 px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all resize-none font-medium"
               />
@@ -108,24 +130,37 @@ const Generator: React.FC = () => {
             <div className="grid md:grid-cols-2 gap-6">
               {/* Field: Number of Questions */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Số lượng câu hỏi</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">
+                  Số lượng câu hỏi
+                </label>
                 <select
                   value={formData.numQuestions}
-                  onChange={(e) => setFormData({ ...formData, numQuestions: parseInt(e.target.value) })}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      numQuestions: parseInt(e.target.value),
+                    })
+                  }
                   className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-gray-700"
                 >
                   {[5, 10, 15, 20].map((n) => (
-                    <option key={n} value={n}>{n} Câu hỏi</option>
+                    <option key={n} value={n}>
+                      {n} Câu hỏi
+                    </option>
                   ))}
                 </select>
               </div>
 
               {/* Field: Difficulty */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">Độ khó</label>
+                <label className="block text-sm font-bold text-gray-700 mb-2">
+                  Độ khó
+                </label>
                 <select
                   value={formData.difficulty}
-                  onChange={(e) => setFormData({ ...formData, difficulty: e.target.value })}
+                  onChange={(e) =>
+                    setFormData({ ...formData, difficulty: e.target.value })
+                  }
                   className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-gray-700"
                 >
                   <option value="easy">Dễ (Easy)</option>
