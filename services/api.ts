@@ -120,9 +120,10 @@ export const api = {
       const response = await axiosInstance.get(`/quiz/public/${id}`);
       return response.data;
     },
-    submit: async (id: string, answers: any) => {
-      const response = await axiosInstance.post(`/quiz/${id}/submit`, {
+    submit: async (id: string, answers: any, duration?: number) => {
+      const response = await axiosInstance.post(`/quiz/submit/${id}`, {
         answers,
+        ...(typeof duration === "number" ? { duration } : {}),
       });
       return response.data;
     },
