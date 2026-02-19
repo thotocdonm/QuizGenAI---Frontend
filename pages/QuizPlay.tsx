@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   ChevronLeft,
@@ -18,6 +18,7 @@ const QuizPlay: React.FC = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const isPreview = Boolean((location.state as any)?.isPreview);
+  const isFetched = useRef(false); // Tạo một cái khóa để kiểm tra
 
   // States
   const [quiz, setQuiz] = useState<any>(null);
@@ -26,24 +27,37 @@ const QuizPlay: React.FC = () => {
   const [userAnswers, setUserAnswers] = useState<Record<number, string>>({});
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [score, setScore] = useState(0);
+    // Tạo một "chốt chặn" để đảm bảo API chỉ gọi 1 lần thực sự
+  const hasCalledAPI = useRef(false); 
 
   // ==================================
   // LOGIC LẤY DỮ LIỆU THẬT TỪ BACKEND
   // ==================================
-  useEffect(() => {
+useEffect(() => {
     const fetchQuiz = async () => {
+      // 1. Chốt chặn id và chống gọi đúp
+      if (!id || hasCalledAPI.current) return; 
+
       try {
         setLoading(true);
-        const response = await api.quiz.getPublic(id as string);
+        hasCalledAPI.current = true; // Khóa ngay
+
+        // 2. CHỈ GỌI DUY NHẤT API NÀY
+        const response = await api.quiz.getPublic(id);
         if (response) {
           setQuiz(response);
         }
+        
+        // KHÔNG gọi api.quiz.getById(id) ở đây nữa!
+
       } catch (err) {
-        console.error("Lỗi lấy chi tiết quiz (public):", err);
+        console.error("Lỗi:", err);
+        hasCalledAPI.current = false; // Reset nếu lỗi thật
       } finally {
         setLoading(false);
       }
     };
+
     fetchQuiz();
   }, [id]);
   // ============================================================
@@ -54,23 +68,24 @@ const QuizPlay: React.FC = () => {
     setUserAnswers({ ...userAnswers, [currentIndex]: option });
   };
 
-  // Xử lý nộp bài
   const handleSubmitQuiz = async () => {
-    if (!id) return;
-    try {
-      setLoading(true);
-      const result = await api.quiz.submit(id, userAnswers);
-      if (result?.quiz) {
-        setQuiz(result.quiz);
-      }
-      setScore(result?.score ?? 0);
+  if (!id) return;
+  try {
+    setLoading(true);
+    // Backend cần nhận { answers: { ... } }
+    const response = await api.quiz.submit(id, { answers: userAnswers });
+    
+    if (response.success) {
+      setScore(response.score);
       setIsSubmitted(true);
-    } catch (err) {
-      console.error("Lỗi lấy quiz full khi nộp bài:", err);
-    } finally {
-      setLoading(false);
+      window.scrollTo(0, 0);
     }
-  };
+  } catch (err) {
+    console.error("Lỗi nộp bài:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   if (loading) {
     return (
