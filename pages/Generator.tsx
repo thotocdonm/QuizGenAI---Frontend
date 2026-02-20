@@ -3,15 +3,19 @@ import { useNavigate } from "react-router-dom";
 import { Sparkles, HelpCircle, Loader2, AlertCircle } from "lucide-react";
 import { api } from "../services/api";
 
-type QuestionType = "T/F" | "singleChoice" | "multipleChoice" | "mixed";
+type QuestionType =
+  | "multipleStatements"
+  | "singleChoice"
+  | "multipleChoice"
+  | "mixed";
 
 const questionTypeOptions: Array<{
   value: QuestionType;
   label: string;
 }> = [
   {
-    value: "T/F",
-    label: "Câu hỏi đúng/sai",
+    value: "multipleStatements",
+    label: "Câu hỏi nhiều mệnh đề",
   },
   {
     value: "singleChoice",

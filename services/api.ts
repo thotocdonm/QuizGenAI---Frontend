@@ -127,6 +127,10 @@ export const api = {
       });
       return response.data;
     },
+    start: async (id: string) => {
+      const response = await axiosInstance.post(`/quiz/start/${id}`);
+      return response.data;
+    },
     update: async (id: string, data: any) => {
       const response = await axiosInstance.put(`/quiz/${id}`, data);
       return response.data;
@@ -134,6 +138,12 @@ export const api = {
 
     getQuizzes: async () => {
       const response = await axiosInstance.get("/quiz");
+      return response.data;
+    },
+  },
+  attempt: {
+    getUserAttempts: async () => {
+      const response = await axiosInstance.get("/attempt");
       return response.data;
     },
   },

@@ -19,9 +19,51 @@ const QuizStart: React.FC = () => {
   const [quiz, setQuiz] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [pageError, setPageError] = useState<string | null>(null);
+  const [startError, setStartError] = useState<string | null>(null);
+  const [starting, setStarting] = useState(false);
 
-  const handleStart = () => {
+  const handleStart = async () => {
     if (!id) return;
+    setStartError(null);
+
+    const maxAttempts = Number(quiz?.maxAttempts);
+    if (Number.isFinite(maxAttempts) && maxAttempts > 0) {
+      setStarting(true);
+      let shouldBlock = false;
+      try {
+        const attempts = await api.attempt.getUserAttempts();
+        const quizId = String(id);
+        const attemptCount = Array.isArray(attempts)
+          ? attempts.filter((attempt) => {
+              const attemptQuizId = String(
+                attempt?.quiz?._id ?? attempt?.quiz ?? "",
+              );
+              const isDeleted = Boolean(attempt?.isDeleted);
+              return attemptQuizId === quizId && !isDeleted;
+            }).length
+          : 0;
+
+        if (attemptCount >= maxAttempts) {
+          setStartError("Bạn đã hết số lần làm bài.");
+          shouldBlock = true;
+        }
+      } catch (err: any) {
+        const status = err?.response?.status;
+        if (status === 404) {
+          // No attempts yet - allow start
+        } else if (status === 401) {
+          setStartError("Bạn cần đăng nhập để làm bài.");
+          shouldBlock = true;
+        } else {
+          setStartError("Không thể bắt đầu quiz. Vui lòng thử lại.");
+          shouldBlock = true;
+        }
+      } finally {
+        setStarting(false);
+      }
+      if (shouldBlock) return;
+    }
+
     sessionStorage.setItem(`quiz-start:${id}`, "1");
     navigate(`/quiz/${id}`, { state: { isFromStart: true } });
   };
@@ -140,10 +182,15 @@ const QuizStart: React.FC = () => {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-4 mt-8">
               <button
                 onClick={handleStart}
-                className="group flex items-center justify-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-lg hover:bg-blue-700 transition-all shadow-xl active:scale-95"
+                disabled={starting}
+                className="group flex items-center justify-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-lg hover:bg-blue-700 transition-all shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
               >
-                <Play className="w-5 h-5" />
-                <span>Bắt đầu làm bài</span>
+                {starting ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Play className="w-5 h-5" />
+                )}
+                <span>{starting ? "Đang kiểm tra..." : "Bắt đầu làm bài"}</span>
                 <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
               </button>
 
@@ -154,6 +201,13 @@ const QuizStart: React.FC = () => {
                 Thoát
               </button>
             </div>
+
+            {startError && (
+              <div className="mt-4 flex items-start gap-2 text-sm text-red-600 font-semibold">
+                <AlertCircle className="w-4 h-4 mt-0.5" />
+                <span>{startError}</span>
+              </div>
+            )}
 
             <div className="mt-8 flex items-start gap-3 text-sm text-gray-500">
               <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />

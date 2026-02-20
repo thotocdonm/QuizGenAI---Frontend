@@ -112,6 +112,8 @@ const QuizPlay: React.FC = () => {
   const [confirmExitOpen, setConfirmExitOpen] = useState(false);
   const [confirmSubmitOpen, setConfirmSubmitOpen] = useState(false);
   const [confirmSubmittedOpen, setConfirmSubmittedOpen] = useState(false);
+  const [retryError, setRetryError] = useState<string | null>(null);
+  const [retrying, setRetrying] = useState(false);
 
   // ==================================
   // LOGIC LẤY DỮ LIỆU THẬT TỪ BACKEND
@@ -150,6 +152,48 @@ const QuizPlay: React.FC = () => {
     fetchQuiz();
   }, [id, isPreview]);
   // ============================================================
+
+  useEffect(() => {
+    if (!id || isPreview) return;
+    if (!quiz) return;
+
+    const maxAttempts = Number(quiz?.maxAttempts);
+    if (!Number.isFinite(maxAttempts) || maxAttempts <= 0) return;
+
+    let cancelled = false;
+
+    const checkAttempts = async () => {
+      try {
+        const attempts = await api.attempt.getUserAttempts();
+        if (cancelled) return;
+        const attemptCount = Array.isArray(attempts)
+          ? attempts.filter((attempt) => {
+              const attemptQuizId = String(
+                attempt?.quiz?._id ?? attempt?.quiz ?? "",
+              );
+              const isDeleted = Boolean(attempt?.isDeleted);
+              return attemptQuizId === String(id) && !isDeleted;
+            }).length
+          : 0;
+
+        if (attemptCount >= maxAttempts) {
+          navigate(`/quiz/${id}/start`, { replace: true });
+        }
+      } catch (err: any) {
+        if (cancelled) return;
+        const status = err?.response?.status;
+        if (status === 401) {
+          navigate(`/quiz/${id}/start`, { replace: true });
+        }
+      }
+    };
+
+    checkAttempts();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [id, isPreview, quiz?.maxAttempts, quiz?._id, navigate]);
   useEffect(() => {
     if (!quiz) {
       setIsCountdownMode(false);
@@ -237,6 +281,17 @@ const QuizPlay: React.FC = () => {
     return "singleChoice";
   };
 
+  const QUESTION_TYPE_LABEL: Record<string, string> = {
+    multipleStatements: "Chọn đáp án đúng nhất về các mệnh đề",
+    singleChoice: "Chọn một đáp án đúng",
+    multipleChoice: "Có thể chọn nhiều đáp án",
+  };
+
+  const getQuestionTypeLabel = (question: any) => {
+    const type = resolveQuestionType(question);
+    return QUESTION_TYPE_LABEL[type] ?? "Câu hỏi";
+  };
+
   const isMultipleChoiceQuestion = (question: any) =>
     resolveQuestionType(question) === "multipleChoice";
 
@@ -292,6 +347,17 @@ const QuizPlay: React.FC = () => {
   // Xử lý nộp bài
   const handleSubmitQuiz = async () => {
     if (!id || !quiz) return;
+    if (isPreview) {
+      const localScore = quiz.questions.reduce(
+        (acc: number, q: any, idx: number) =>
+          acc + (isAnswerCorrect(q, userAnswers[idx]) ? 1 : 0),
+        0,
+      );
+      setScore(localScore);
+      setIsSubmitted(true);
+      setConfirmSubmittedOpen(true);
+      return;
+    }
     try {
       setLoading(true);
       const answersPayload = quiz.questions.map((q: any, idx: number) => {
@@ -355,6 +421,7 @@ const QuizPlay: React.FC = () => {
 
   const totalQuestions = quiz.questions.length;
   const currentQuiz = quiz.questions[currentIndex];
+  const currentQuestionTypeLabel = getQuestionTypeLabel(currentQuiz);
   const progress = ((currentIndex + 1) / totalQuestions) * 100;
   const answeredCount = quiz.questions.reduce(
     (acc: number, q: any, idx: number) =>
@@ -386,6 +453,56 @@ const QuizPlay: React.FC = () => {
       return;
     }
     handleSubmitQuiz();
+  };
+
+  const handleRetryRequest = async () => {
+    if (!id || !quiz) return;
+    if (isPreview) {
+      window.location.reload();
+      return;
+    }
+    setRetryError(null);
+
+    const maxAttempts = Number(quiz?.maxAttempts);
+    if (!Number.isFinite(maxAttempts) || maxAttempts <= 0) {
+      window.location.reload();
+      return;
+    }
+
+    setRetrying(true);
+    let attemptCount = 0;
+    try {
+      const attempts = await api.attempt.getUserAttempts();
+      attemptCount = Array.isArray(attempts)
+        ? attempts.filter((attempt) => {
+            const attemptQuizId = String(
+              attempt?.quiz?._id ?? attempt?.quiz ?? "",
+            );
+            const isDeleted = Boolean(attempt?.isDeleted);
+            return attemptQuizId === String(id) && !isDeleted;
+          }).length
+        : 0;
+    } catch (err: any) {
+      const status = err?.response?.status;
+      if (status !== 404) {
+        if (status === 401) {
+          setRetryError("Bạn cần đăng nhập để làm lại bài.");
+        } else {
+          setRetryError("Không thể kiểm tra số lượt làm. Vui lòng thử lại.");
+        }
+        setRetrying(false);
+        return;
+      }
+    }
+
+    if (attemptCount >= maxAttempts) {
+      setRetryError("Bạn đã hết lượt làm bài.");
+      setRetrying(false);
+      return;
+    }
+
+    setRetrying(false);
+    window.location.reload();
   };
 
   return (
@@ -428,10 +545,15 @@ const QuizPlay: React.FC = () => {
             <div className="bg-white rounded-[2rem] p-8 md:p-12 shadow-xl shadow-blue-900/5 border border-gray-100 mb-8 relative overflow-hidden">
               <div className="absolute top-0 left-0 w-2 h-full bg-blue-600"></div>
 
-              <p className="text-blue-600 font-bold text-xl mb-2 tracking-[0.05em]">
-                Câu hỏi {currentIndex + 1}:
-              </p>
-              <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-8 leading-relaxed">
+              <div className="flex items-center gap-3 mb-2">
+                <p className="text-blue-600 font-bold text-xl tracking-[0.05em]">
+                  Câu hỏi {currentIndex + 1}:
+                </p>
+                <span className="ml-auto px-4 py-1.5 rounded-full text-sm font-extrabold tracking-wide text-blue-700 bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200 shadow-[0_6px_18px_rgba(59,130,246,0.18)]">
+                  {currentQuestionTypeLabel}
+                </span>
+              </div>
+              <h2 className="text-base md:text-lg font-semibold text-gray-900 mb-8 leading-relaxed whitespace-pre-line">
                 {currentQuiz.text}
               </h2>
 
@@ -559,11 +681,18 @@ const QuizPlay: React.FC = () => {
 
                 <div className="flex flex-col sm:flex-row justify-center gap-4">
                   <button
-                    onClick={() => window.location.reload()}
-                    className="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold flex items-center justify-center space-x-2 hover:bg-gray-800 transition-all shadow-lg"
+                    onClick={handleRetryRequest}
+                    disabled={retrying}
+                    className="bg-gray-900 text-white px-8 py-4 rounded-xl font-bold flex items-center justify-center space-x-2 hover:bg-gray-800 transition-all shadow-lg disabled:opacity-70 disabled:cursor-not-allowed"
                   >
-                    <RefreshCcw className="w-5 h-5" />
-                    <span>Làm lại bài này</span>
+                    {retrying ? (
+                      <Loader2 className="w-5 h-5 animate-spin" />
+                    ) : (
+                      <RefreshCcw className="w-5 h-5" />
+                    )}
+                    <span>
+                      {retrying ? "Đang kiểm tra..." : "Làm lại bài này"}
+                    </span>
                   </button>
                   <button
                     onClick={() => navigate("/", { replace: true })}
@@ -572,6 +701,12 @@ const QuizPlay: React.FC = () => {
                     Thoát về trang chủ
                   </button>
                 </div>
+                {retryError && (
+                  <div className="mt-4 flex items-start justify-center gap-2 text-sm text-red-600 font-semibold">
+                    <AlertCircle className="w-4 h-4 mt-0.5" />
+                    <span>{retryError}</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -586,7 +721,9 @@ const QuizPlay: React.FC = () => {
                   </p>
                   <div
                     className={`text-3xl font-black ${
-                      isCountdownMode && timeLeftSec !== null && timeLeftSec <= 60
+                      isCountdownMode &&
+                      timeLeftSec !== null &&
+                      timeLeftSec <= 60
                         ? "text-red-500"
                         : "text-gray-900"
                     }`}
