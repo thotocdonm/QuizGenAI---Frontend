@@ -11,6 +11,8 @@ import QuizGenerating from "./pages/QuizGenerating";
 import ProtectedRoute from "./components/ProtectedRoute"; // 1. Import gác cổng
 import QuizManage from "./pages/QuizManage";
 import QuizHistory from "./pages/QuizHistory";
+import QuizStart from "./pages/QuizStart";
+
 
 const App: React.FC = () => {
   return (
@@ -47,12 +49,12 @@ const App: React.FC = () => {
               
             />
             <Route
+              path="/quiz/:id/start"
+              element={<QuizStart />}
+            />
+            <Route
               path="/quiz/:id"
-              element={
-                <ProtectedRoute>
-                  <QuizPlay />
-                </ProtectedRoute>
-              }
+              element={<QuizPlay />}
             />
 
             <Route 

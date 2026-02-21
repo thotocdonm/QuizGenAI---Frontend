@@ -2,7 +2,34 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Sparkles, HelpCircle, Loader2, AlertCircle } from "lucide-react";
 import { api } from "../services/api";
-import { Difficulty } from "../types";
+
+type QuestionType =
+  | "multipleStatements"
+  | "singleChoice"
+  | "multipleChoice"
+  | "mixed";
+
+const questionTypeOptions: Array<{
+  value: QuestionType;
+  label: string;
+}> = [
+  {
+    value: "multipleStatements",
+    label: "Câu hỏi nhiều mệnh đề",
+  },
+  {
+    value: "singleChoice",
+    label: "Trắc nghiệm",
+  },
+  {
+    value: "multipleChoice",
+    label: "Chọn nhiều đáp án",
+  },
+  {
+    value: "mixed",
+    label: "Cả 3 loại câu hỏi trên",
+  },
+];
 
 const Generator: React.FC = () => {
   const navigate = useNavigate();
@@ -14,6 +41,7 @@ const Generator: React.FC = () => {
     topic: "", // Theo yêu cầu Jira (trước đây là prompt)
     numQuestions: 5,
     difficulty: "medium", // lowercase theo ví dụ request body của Jira
+    questionType: "singleChoice" as QuestionType,
   });
 
   // 1. Hàm Validation input theo yêu cầu Jira
@@ -39,10 +67,12 @@ const Generator: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      // Gọi API với cấu trúc body: { title, topic, numQuestions, difficulty }
+      // Gọi API với cấu trúc body: { title, topic, numQuestions, difficulty, questionType }
       const response = await api.quiz.generate(formData);
       const success = response?.success === true;
-      const quizId = success ? response.data?._id : null;
+      const quizId = success
+        ? response.quizId || response.data?._id || response.data?.id
+        : null;
       navigate("/generating", {
         state: {
           success,
@@ -127,7 +157,7 @@ const Generator: React.FC = () => {
               />
             </div>
 
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid md:grid-cols-3 gap-6">
               {/* Field: Number of Questions */}
               <div>
                 <label className="block text-sm font-bold text-gray-700 mb-2">
@@ -138,14 +168,14 @@ const Generator: React.FC = () => {
                   onChange={(e) =>
                     setFormData({
                       ...formData,
-                      numQuestions: parseInt(e.target.value),
+                      numQuestions: parseInt(e.target.value, 10),
                     })
                   }
                   className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-gray-700"
                 >
-                  {[5, 10, 15, 20].map((n) => (
+                  {[5, 10, 15, 20, 25, 30].map((n) => (
                     <option key={n} value={n}>
-                      {n} Câu hỏi
+                      {n} câu
                     </option>
                   ))}
                 </select>
@@ -163,9 +193,32 @@ const Generator: React.FC = () => {
                   }
                   className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-gray-700"
                 >
-                  <option value="easy">Dễ (Easy)</option>
-                  <option value="medium">Trung bình (Medium)</option>
-                  <option value="hard">Khó (Hard)</option>
+                  <option value="easy">Dễ</option>
+                  <option value="medium">Trung bình</option>
+                  <option value="hard">Khó</option>
+                </select>
+              </div>
+
+              {/* Field: Question Type */}
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">
+                  Loại câu hỏi
+                </label>
+                <select
+                  value={formData.questionType}
+                  onChange={(e) =>
+                    setFormData({
+                      ...formData,
+                      questionType: e.target.value as QuestionType,
+                    })
+                  }
+                  className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-gray-700"
+                >
+                  {questionTypeOptions.map((option) => (
+                    <option key={option.value} value={option.value}>
+                      {option.label}
+                    </option>
+                  ))}
                 </select>
               </div>
             </div>

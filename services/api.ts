@@ -120,10 +120,15 @@ export const api = {
       const response = await axiosInstance.get(`/quiz/public/${id}`);
       return response.data;
     },
-    submit: async (id: string, answers: any) => {
-      const response = await axiosInstance.post(`/quiz/${id}/submit`, {
+    submit: async (id: string, answers: any, duration?: number) => {
+      const response = await axiosInstance.post(`/quiz/submit/${id}`, {
         answers,
+        ...(typeof duration === "number" ? { duration } : {}),
       });
+      return response.data;
+    },
+    start: async (id: string) => {
+      const response = await axiosInstance.post(`/quiz/start/${id}`);
       return response.data;
     },
     update: async (id: string, data: any) => {
@@ -150,5 +155,10 @@ export const api = {
 
 
   },
- 
+  attempt: {
+    getUserAttempts: async () => {
+      const response = await axiosInstance.get("/attempt");
+      return response.data;
+    },
+  },
 };
