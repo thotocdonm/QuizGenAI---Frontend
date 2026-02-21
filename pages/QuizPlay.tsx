@@ -114,6 +114,7 @@ const QuizPlay: React.FC = () => {
   const [confirmSubmittedOpen, setConfirmSubmittedOpen] = useState(false);
   const [retryError, setRetryError] = useState<string | null>(null);
   const [retrying, setRetrying] = useState(false);
+  const quizKey = quiz?._id ?? quiz?.id;
 
   // ==================================
   // LOGIC LẤY DỮ LIỆU THẬT TỪ BACKEND
@@ -193,7 +194,7 @@ const QuizPlay: React.FC = () => {
     return () => {
       cancelled = true;
     };
-  }, [id, isPreview, quiz?.maxAttempts, quiz?._id, navigate]);
+  }, [id, isPreview, quiz?.maxAttempts, quizKey, navigate]);
   useEffect(() => {
     if (!quiz) {
       setIsCountdownMode(false);
@@ -220,7 +221,7 @@ const QuizPlay: React.FC = () => {
     setElapsedSec(0);
     setTimeLeftSec(totalSec);
     autoSubmittedRef.current = false;
-  }, [quiz?._id, quiz?.timeLimit]);
+  }, [quizKey, quiz?.timeLimit]);
 
   // useEffect(() => {
   //   if (!quiz) {
@@ -268,7 +269,7 @@ const QuizPlay: React.FC = () => {
     }, 1000);
 
     return () => window.clearTimeout(timerId);
-  }, [quiz?._id, isSubmitted, isCountdownMode, timeLeftSec, elapsedSec]);
+  }, [quizKey, isSubmitted, isCountdownMode, timeLeftSec, elapsedSec]);
 
   const resolveQuestionType = (question: any): string => {
     const rawType = question?.questionType ?? quiz?.questionType;
