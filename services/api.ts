@@ -140,6 +140,20 @@ export const api = {
       const response = await axiosInstance.get("/quiz");
       return response.data;
     },
+
+
+     delete: async (id: string) => {
+    const response = await axiosInstance.delete(`/quiz/${id}`);
+    return response.data;
+  },
+
+    getHistory: async () => {
+    const response = await axiosInstance.get('/quiz/history/me');
+    return response.data;
+  },
+
+
+
   },
   attempt: {
     getUserAttempts: async () => {

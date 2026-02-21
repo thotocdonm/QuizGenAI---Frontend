@@ -118,8 +118,11 @@ const QuizPlay: React.FC = () => {
   // ==================================
   // LOGIC LẤY DỮ LIỆU THẬT TỪ BACKEND
   // ==================================
-  useEffect(() => {
+useEffect(() => {
     const fetchQuiz = async () => {
+      // 1. Chốt chặn id và chống gọi đúp
+      if (!id || hasCalledAPI.current) return; 
+
       try {
         setLoading(true);
         if (isPreview) {
@@ -143,12 +146,17 @@ const QuizPlay: React.FC = () => {
             setQuiz(resolvedQuiz);
           }
         }
+        
+        // KHÔNG gọi api.quiz.getById(id) ở đây nữa!
+
       } catch (err) {
-        console.error("Lỗi lấy chi tiết quiz (public):", err);
+        console.error("Lỗi:", err);
+        hasCalledAPI.current = false; // Reset nếu lỗi thật
       } finally {
         setLoading(false);
       }
     };
+
     fetchQuiz();
   }, [id, isPreview]);
   // ============================================================
@@ -344,7 +352,6 @@ const QuizPlay: React.FC = () => {
     setUserAnswers((prev) => ({ ...prev, [currentIndex]: optionIndex }));
   };
 
-  // Xử lý nộp bài
   const handleSubmitQuiz = async () => {
     if (!id || !quiz) return;
     if (isPreview) {
@@ -388,7 +395,12 @@ const QuizPlay: React.FC = () => {
     } finally {
       setLoading(false);
     }
-  };
+  } catch (err) {
+    console.error("Lỗi nộp bài:", err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   useEffect(() => {
     if (!isCountdownMode) return;

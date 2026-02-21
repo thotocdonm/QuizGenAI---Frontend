@@ -9,7 +9,10 @@ import Auth from "./pages/Auth";
 import QuizPlay from "./pages/QuizPlay";
 import QuizGenerating from "./pages/QuizGenerating";
 import ProtectedRoute from "./components/ProtectedRoute"; // 1. Import gác cổng
+import QuizManage from "./pages/QuizManage";
+import QuizHistory from "./pages/QuizHistory";
 import QuizStart from "./pages/QuizStart";
+
 
 const App: React.FC = () => {
   return (
@@ -32,6 +35,7 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
+            //
             <Route
               path="/quiz/:id/edit"
               element={
@@ -39,6 +43,10 @@ const App: React.FC = () => {
                   <QuizEdit />
                 </ProtectedRoute>
               }
+
+
+
+              
             />
             <Route
               path="/quiz/:id/start"
@@ -48,6 +56,24 @@ const App: React.FC = () => {
               path="/quiz/:id"
               element={<QuizPlay />}
             />
+
+            <Route 
+  path="/history" 
+  element={
+    <ProtectedRoute>
+      <QuizHistory />
+    </ProtectedRoute>
+  } 
+/>
+
+            <Route 
+  path="/manage" 
+  element={
+    <ProtectedRoute>
+      <QuizManage />
+    </ProtectedRoute>
+  } 
+/>
             <Route
               path="/generating"
               element={
@@ -57,6 +83,10 @@ const App: React.FC = () => {
               }
             />
           </Routes>
+
+
+          
+          
         </main>
 
         {/* Simple Footer */}
