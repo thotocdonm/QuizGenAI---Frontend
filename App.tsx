@@ -9,6 +9,7 @@ import Auth from "./pages/Auth";
 import QuizPlay from "./pages/QuizPlay";
 import QuizGenerating from "./pages/QuizGenerating";
 import ProtectedRoute from "./components/ProtectedRoute"; // 1. Import gác cổng
+import QuizStart from "./pages/QuizStart";
 
 const App: React.FC = () => {
   return (
@@ -40,12 +41,12 @@ const App: React.FC = () => {
               }
             />
             <Route
+              path="/quiz/:id/start"
+              element={<QuizStart />}
+            />
+            <Route
               path="/quiz/:id"
-              element={
-                <ProtectedRoute>
-                  <QuizPlay />
-                </ProtectedRoute>
-              }
+              element={<QuizPlay />}
             />
             <Route
               path="/generating"
