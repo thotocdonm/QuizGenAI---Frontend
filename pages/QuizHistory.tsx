@@ -65,7 +65,9 @@ const QuizHistory: React.FC = () => {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {history.map((item) => (
-                <tr key={item._id} className="hover:bg-indigo-50/20 transition-all group">
+                <tr key={item._id} className="hover:bg-indigo-50/20 transition-all group"
+                onClick={() => navigate(`/history/detail/${item.quiz}/${item.attemptNumber}`)}
+                >
                   <td className="px-8 py-5">
                     <div className="font-black text-gray-900 group-hover:text-indigo-600 transition-colors">
                       {item.quizTitle} {/* Lấy trực tiếp từ field quizTitle trong Model Attempt */}
