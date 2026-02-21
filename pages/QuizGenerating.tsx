@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Loader2, CheckCircle2, Sparkles, Brain, XCircle } from "lucide-react";
 import { useLocation, useNavigate } from "react-router-dom";
+import { api } from "@/services/api";
 
 const QuizGenerating: React.FC = () => {
   const [step, setStep] = useState(0);
   const location = useLocation();
   const navigate = useNavigate();
-  const [done, setDone] = useState(false);
-
-  const { success, quizId, errorMessage } = (location.state as any) || {};
+  const [success, setSuccess] = useState<boolean | null>(null);
+  const [quizId, setQuizId] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const hasRequestedRef = useRef(false);
+  const formData = (location.state as any)?.formData;
   const steps = [
     "Đang phân tích nội dung...",
     "Trích xuất các ý chính...",
@@ -18,22 +21,53 @@ const QuizGenerating: React.FC = () => {
   ];
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setStep((prev) => {
-        if (prev < steps.length - 1) return prev + 1;
+    if (!formData) {
+      navigate("/generate", { replace: true });
+    }
+  }, [formData, navigate]);
 
-        // stop when come to the last step
-        clearInterval(interval);
-        setDone(true);
-        return prev;
-      });
+  useEffect(() => {
+    if (!formData || hasRequestedRef.current) return;
+    hasRequestedRef.current = true;
+
+    const run = async () => {
+      try {
+        const response = await api.quiz.generate(formData);
+        const ok = response?.success === true;
+        const id = ok
+          ? response.quizId || response.data?._id || response.data?.id
+          : null;
+        setSuccess(ok);
+        setQuizId(id ?? null);
+        if (!ok) {
+          setErrorMessage("Tạo quiz thất bại.");
+        }
+      } catch (err: any) {
+        setSuccess(false);
+        setErrorMessage(
+          err?.response?.data?.message || "Không thể kết nối đến máy chủ.",
+        );
+      }
+    };
+
+    run();
+  }, [formData]);
+
+  const done = success !== null;
+
+  useEffect(() => {
+    if (done) {
+      setStep(steps.length - 1);
+      return;
+    }
+    const interval = setInterval(() => {
+      setStep((prev) => Math.min(prev + 1, steps.length - 1));
     }, 2000);
     return () => clearInterval(interval);
-  }, [steps.length]);
+  }, [done, steps.length]);
 
   useEffect(() => {
     if (!done) return;
-
     if (success && quizId) {
       navigate(`/quiz/${quizId}/edit`, { replace: true });
     } else {

@@ -1,7 +1,6 @@
-import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Sparkles, HelpCircle, Loader2, AlertCircle } from "lucide-react";
-import { api } from "../services/api";
 
 type QuestionType =
   | "multipleStatements"
@@ -33,6 +32,7 @@ const questionTypeOptions: Array<{
 
 const Generator: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -58,7 +58,12 @@ const Generator: React.FC = () => {
     return true;
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  useEffect(() => {
+    const message = (location.state as any)?.errorMessage;
+    if (message) setError(message);
+  }, [location.state]);
+
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     // Kiểm tra validation trước khi gửi
@@ -66,40 +71,9 @@ const Generator: React.FC = () => {
 
     setLoading(true);
     setError(null);
-    try {
-      // Gọi API với cấu trúc body: { title, topic, numQuestions, difficulty, questionType }
-      const response = await api.quiz.generate(formData);
-      const success = response?.success === true;
-      const quizId = success
-        ? response.quizId || response.data?._id || response.data?.id
-        : null;
-      navigate("/generating", {
-        state: {
-          success,
-          quizId,
-          errorMessage: success ? null : "Tạo quiz thất bại.",
-        },
-      });
-
-      // if (response && response.success === true) {
-      //   const quizId = response.data._id;
-      // Điều hướng sang trang loading hoặc trang chi tiết theo cấu trúc URL mới /quiz/:id/edit
-      //navigate(`/quiz/${quizId}/edit`);
-      // }
-    } catch (err: any) {
-      console.error("Lỗi tạo Quiz:", err);
-      setError(err.response?.data?.message || "Không thể kết nối đến máy chủ.");
-      navigate("/generating", {
-        state: {
-          success: false,
-          quizId: null,
-          errorMessage:
-            err.response?.data?.message || "Không thể kết nối đến máy chủ.",
-        },
-      });
-    } finally {
-      setLoading(false);
-    }
+    navigate("/generating", {
+      state: { formData: { ...formData } },
+    });
   };
 
   return (
