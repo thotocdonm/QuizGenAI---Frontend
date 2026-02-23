@@ -622,14 +622,14 @@ const QuizEdit: React.FC = () => {
                       )}
                       <span>Lưu quiz</span>
                     </button>
-                    <button
+                    {/* <button
                       onClick={handlePreviewClick}
                       className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 px-4 py-2 rounded-xl font-black text-gray-700 hover:border-emerald-600 hover:text-emerald-700 transition-all shadow-sm"
                       title="Chuyển sang trang làm bài (preview)"
                     >
                       <Play className="w-4 h-4" />
                       <span>Preview làm bài</span>
-                    </button>
+                    </button> */}
                     <button
                       onClick={handleShare}
                       className="px-4 py-2 rounded-xl border-2 border-gray-200 bg-white font-black text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all"
@@ -1028,14 +1028,14 @@ const QuizEdit: React.FC = () => {
                 >
                   Quay về tạo quiz
                 </button>
-                <button
+                {/* <button
                   onClick={handlePreviewClick}
                   className="flex items-center gap-2 bg-white border-2 border-gray-200 px-5 py-3 rounded-xl font-black text-gray-700 hover:border-emerald-600 hover:text-emerald-700 transition-all shadow-sm"
                   title="Chuyển sang trang làm bài (preview)"
                 >
                   <Play className="w-5 h-5" />
                   <span>Preview làm bài</span>
-                </button>
+                </button> */}
                 <button
                   onClick={handleShare}
                   className="px-5 py-3 rounded-xl border-2 border-gray-200 bg-white font-black text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all"
