@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import {
   AlertCircle,
   ArrowRight,
@@ -11,10 +11,12 @@ import {
   ClipboardList,
 } from "lucide-react";
 import { api } from "@/services/api";
+import { getAccessToken } from "@/utils/authUtils";
 
 const QuizStart: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const location = useLocation();
 
   const [quiz, setQuiz] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -25,6 +27,13 @@ const QuizStart: React.FC = () => {
   const handleStart = async () => {
     if (!id) return;
     setStartError(null);
+
+    const token = getAccessToken();
+    if (!token) {
+      const returnTo = `${location.pathname}${location.search}`;
+      navigate("/auth", { state: { from: returnTo } });
+      return;
+    }
 
     const maxAttempts = Number(quiz?.maxAttempts);
     if (Number.isFinite(maxAttempts) && maxAttempts > 0) {

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   Mail,
   Lock,
@@ -13,6 +13,11 @@ import { setToken } from "@/utils/authUtils";
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo =
+    typeof (location.state as any)?.from === "string"
+      ? (location.state as any).from
+      : "/";
   const [isLogin, setIsLogin] = useState(true);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -47,7 +52,7 @@ const Auth: React.FC = () => {
         console.log("User: ", JSON.stringify(userData.data.user));
         localStorage.setItem("user", JSON.stringify(userData.data.user));
       }
-      navigate("/");
+      navigate(returnTo, { replace: true });
     } catch (err: any) {
       console.error(err);
       setError(

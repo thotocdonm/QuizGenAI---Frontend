@@ -14,7 +14,6 @@ import QuizHistory from "./pages/QuizHistory";
 import QuizStart from "./pages/QuizStart";
 import AttemptDetail from "./pages/AttemptDetail";
 
-
 const App: React.FC = () => {
   return (
     <Router>
@@ -23,10 +22,8 @@ const App: React.FC = () => {
         <main>
           <Routes>
             <Route path="/" element={<Landing />} />
-
             <Route path="/auth" element={<Auth />} />
             {/* Thêm các Route mới vào đây */}
-
             {/* 2. Bọc các trang cần bảo vệ vào ProtectedRoute */}
             <Route
               path="/generate"
@@ -44,37 +41,32 @@ const App: React.FC = () => {
                   <QuizEdit />
                 </ProtectedRoute>
               }
-
-
-
-              
             />
-            <Route
-              path="/quiz/:id/start"
-              element={<QuizStart />}
-            />
+            <Route path="/quiz/:id/start" element={<QuizStart />} />
             <Route
               path="/quiz/:id"
-              element={<QuizPlay />}
+              element={
+                <ProtectedRoute>
+                  <QuizPlay />
+                </ProtectedRoute>
+              }
             />
-
-            <Route 
-  path="/history" 
-  element={
-    <ProtectedRoute>
-      <QuizHistory />
-    </ProtectedRoute>
-  } 
-/>
-
-            <Route 
-  path="/manage" 
-  element={
-    <ProtectedRoute>
-      <QuizManage />
-    </ProtectedRoute>
-  } 
-/>
+            <Route
+              path="/history"
+              element={
+                <ProtectedRoute>
+                  <QuizHistory />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path="/manage"
+              element={
+                <ProtectedRoute>
+                  <QuizManage />
+                </ProtectedRoute>
+              }
+            />
             <Route
               path="/generating"
               element={
@@ -83,21 +75,15 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
-
-
-            <Route 
-  path="/history/detail/:quizId/:number" 
-  element={
-    <ProtectedRoute>
-      <AttemptDetail />
-    </ProtectedRoute>
-  } 
-/>
+            <Route
+              path="/history/detail/:quizId/:number"
+              element={
+                <ProtectedRoute>
+                  <AttemptDetail />
+                </ProtectedRoute>
+              }
+            />
           </Routes>
-
-
-          
-          
         </main>
 
         {/* Simple Footer */}

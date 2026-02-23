@@ -372,16 +372,8 @@ const QuizPlay: React.FC = () => {
       });
       const durationSec = Math.max(0, elapsedSec);
       const result = await api.quiz.submit(id, answersPayload, durationSec);
-      // if (result?.quiz) {
-      //   setQuiz(result.quiz);
-      // }
-      setScore(result?.score ?? 0);
-      try {
-        const fullQuiz = await api.quiz.getById(id);
-        if (fullQuiz?.questions?.length) setQuiz(fullQuiz);
-      } catch (e) {
-        console.warn("Không lấy được full quiz sau submit:", e);
-      }
+      setScore(result?.attempt?.score ?? 0);
+      if (result?.quiz?.questions?.length) setQuiz(result?.quiz);
       setIsSubmitted(true);
       setConfirmSubmittedOpen(true);
     } catch (err) {
