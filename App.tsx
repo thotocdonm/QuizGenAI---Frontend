@@ -12,6 +12,7 @@ import ProtectedRoute from "./components/ProtectedRoute"; // 1. Import gác cổ
 import QuizManage from "./pages/QuizManage";
 import QuizHistory from "./pages/QuizHistory";
 import QuizStart from "./pages/QuizStart";
+import AttemptDetail from "./pages/AttemptDetail";
 
 
 const App: React.FC = () => {
@@ -82,6 +83,16 @@ const App: React.FC = () => {
                 </ProtectedRoute>
               }
             />
+
+
+            <Route 
+  path="/history/detail/:quizId/:number" 
+  element={
+    <ProtectedRoute>
+      <AttemptDetail />
+    </ProtectedRoute>
+  } 
+/>
           </Routes>
 
 
