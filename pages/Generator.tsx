@@ -77,20 +77,20 @@ const Generator: React.FC = () => {
   };
 
   return (
-    <div className="pt-32 pb-16 px-4 flex justify-center items-center min-h-[90vh] bg-gray-50">
+    <div className="pt-32 pb-16 px-4 flex justify-center items-center min-h-[90vh] bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
       <div className="max-w-2xl w-full">
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-extrabold text-gray-900 mb-4 tracking-tight">
+          <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-4 tracking-tight">
             Quiz Generator
           </h1>
-          <p className="text-gray-600 font-medium">
+          <p className="text-gray-600 dark:text-gray-400 font-medium">
             Cấu hình các thông số để AI tạo bộ câu hỏi cho bạn.
           </p>
         </div>
 
-        <div className="bg-white rounded-[2.5rem] shadow-2xl p-8 md:p-10 border border-gray-100">
+        <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] shadow-2xl p-8 md:p-10 border border-gray-100 dark:border-gray-800 transition-colors">
           {error && (
-            <div className="mb-6 bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl flex items-center space-x-2 text-sm font-bold">
+            <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-600 dark:text-red-400 px-4 py-3 rounded-xl flex items-center space-x-2 text-sm font-bold">
               <AlertCircle className="w-5 h-5" />
               <span>{error}</span>
             </div>
@@ -99,7 +99,7 @@ const Generator: React.FC = () => {
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Field: Title - Mới thêm theo Jira */}
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                 Quiz Title
               </label>
               <input
@@ -110,13 +110,13 @@ const Generator: React.FC = () => {
                   setFormData({ ...formData, title: e.target.value })
                 }
                 placeholder="Ví dụ: Kiểm tra Toán cơ bản"
-                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-medium"
+                className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:bg-white dark:focus:bg-gray-900 focus:border-purple-500 outline-none transition-all font-medium"
               />
             </div>
 
             {/* Field: Topic */}
             <div>
-              <label className="block text-sm font-bold text-gray-700 mb-2 flex items-center space-x-1">
+              <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2 flex items-center space-x-1">
                 <span>Quiz Topic / Content</span>
                 <HelpCircle className="w-4 h-4 text-gray-400" />
               </label>
@@ -127,14 +127,14 @@ const Generator: React.FC = () => {
                   setFormData({ ...formData, topic: e.target.value })
                 }
                 placeholder="Dán nội dung bài học hoặc mô tả chủ đề tại đây (ít nhất 10 ký tự)..."
-                className="w-full h-40 px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all resize-none font-medium"
+                className="w-full h-40 px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:bg-white dark:focus:bg-gray-900 focus:border-purple-500 outline-none transition-all resize-none font-medium"
               />
             </div>
 
             <div className="grid md:grid-cols-3 gap-6">
               {/* Field: Number of Questions */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   Số lượng câu hỏi
                 </label>
                 <select
@@ -145,10 +145,10 @@ const Generator: React.FC = () => {
                       numQuestions: parseInt(e.target.value, 10),
                     })
                   }
-                  className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-gray-700"
+                  className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:bg-white dark:focus:bg-gray-900 focus:border-purple-500 outline-none transition-all font-bold text-gray-700"
                 >
                   {[5, 10, 15, 20, 25, 30].map((n) => (
-                    <option key={n} value={n}>
+                    <option key={n} value={n} className="dark:bg-gray-900">
                       {n} câu
                     </option>
                   ))}
@@ -157,7 +157,7 @@ const Generator: React.FC = () => {
 
               {/* Field: Difficulty */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   Độ khó
                 </label>
                 <select
@@ -165,17 +165,17 @@ const Generator: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, difficulty: e.target.value })
                   }
-                  className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-gray-700"
+                  className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:bg-white dark:focus:bg-gray-900 focus:border-purple-500 outline-none transition-all font-bold text-gray-700"
                 >
-                  <option value="easy">Dễ</option>
-                  <option value="medium">Trung bình</option>
-                  <option value="hard">Khó</option>
+                  <option value="easy" className="dark:bg-gray-900">Dễ</option>
+                  <option value="medium" className="dark:bg-gray-900">Trung bình</option>
+                  <option value="hard" className="dark:bg-gray-900">Khó</option>
                 </select>
               </div>
 
               {/* Field: Question Type */}
               <div>
-                <label className="block text-sm font-bold text-gray-700 mb-2">
+                <label className="block text-sm font-bold text-gray-700 dark:text-gray-300 mb-2">
                   Loại câu hỏi
                 </label>
                 <select
@@ -186,10 +186,10 @@ const Generator: React.FC = () => {
                       questionType: e.target.value as QuestionType,
                     })
                   }
-                  className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 bg-gray-50 focus:bg-white focus:border-blue-500 outline-none transition-all font-bold text-gray-700"
+                  className="w-full px-5 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white focus:bg-white dark:focus:bg-gray-900 dark:bg-gray-900 focus:border-purple-500 outline-none transition-all font-bold text-gray-700"
                 >
                   {questionTypeOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
+                    <option key={option.value} value={option.value} className="dark:bg-gray-900">
                       {option.label}
                     </option>
                   ))}
@@ -200,7 +200,7 @@ const Generator: React.FC = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center space-x-3 bg-blue-600 text-white py-5 rounded-[1.5rem] font-black text-xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 active:scale-[0.98] disabled:opacity-70"
+              className="w-full flex items-center justify-center space-x-3 bg-purple-600 text-white py-5 rounded-[1.5rem] font-black text-xl hover:bg-purple-700 transition-all shadow-xl shadow-purple-200 dark:shadow-none active:scale-[0.98] disabled:opacity-70"
             >
               {loading ? (
                 <>

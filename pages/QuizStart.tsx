@@ -116,19 +116,19 @@ const QuizStart: React.FC = () => {
   const difficultyBadge = useMemo(() => {
     const level = String(quiz?.difficulty ?? "").toLowerCase();
     if (level.includes("dễ") || level.includes("easy")) {
-      return "bg-emerald-100 text-emerald-700";
+      return "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400";
     }
     if (level.includes("khó") || level.includes("hard")) {
-      return "bg-rose-100 text-rose-700";
+      return "bg-rose-100 text-rose-700 dark:bg-rose-900/30 dark:text-rose-400";
     }
-    return "bg-amber-100 text-amber-700";
+    return "bg-amber-100 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400";
   }, [quiz?.difficulty]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-        <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
-        <p className="text-gray-500 font-medium animate-pulse">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-white dark:bg-gray-950 transition-colors duration-300">
+        <Loader2 className="w-12 h-12 text-purple-600 dark:text-purple-400 animate-spin mb-4" />
+        <p className="text-gray-500 dark:text-gray-400 font-medium animate-pulse">
           Đang chuẩn bị bài quiz...
         </p>
       </div>
@@ -137,18 +137,18 @@ const QuizStart: React.FC = () => {
 
   if (pageError) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white px-4">
-        <div className="max-w-md w-full text-center bg-white rounded-3xl p-8 shadow-xl border border-gray-100">
-          <div className="w-14 h-14 mx-auto rounded-full bg-red-50 flex items-center justify-center mb-4">
-            <AlertCircle className="w-7 h-7 text-red-600" />
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950 px-4 transition-colors duration-300">
+        <div className="max-w-md w-full text-center bg-white dark:bg-gray-900 rounded-3xl p-8 shadow-xl border border-gray-100 dark:border-gray-800 dark:border-gray-800">
+          <div className="w-14 h-14 mx-auto rounded-full bg-red-50 dark:bg-red-900/20 flex items-center justify-center mb-4">
+            <AlertCircle className="w-7 h-7 text-red-600 dark:text-red-400" />
           </div>
-          <h2 className="text-xl font-bold text-gray-900 mb-2">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white mb-2">
             Không thể mở quiz
           </h2>
-          <p className="text-gray-500 mb-6">{pageError}</p>
+          <p className="text-gray-500 dark:text-gray-400 mb-6">{pageError}</p>
           <button
             onClick={() => navigate("/generate")}
-            className="w-full bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition-all"
+            className="w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition-all"
           >
             Quay lại trang tạo quiz
           </button>
@@ -159,31 +159,31 @@ const QuizStart: React.FC = () => {
 
   if (!quiz) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
-        <p className="text-gray-500 font-medium">Không có dữ liệu quiz.</p>
+      <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950 transition-colors duration-300">
+        <p className="text-gray-500 dark:text-gray-400 font-medium">Không có dữ liệu quiz.</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] pt-24 pb-16 px-4 relative overflow-hidden">
-      <div className="absolute -top-24 right-0 w-96 h-96 bg-blue-200/40 rounded-full blur-3xl" />
-      <div className="absolute -bottom-32 left-0 w-96 h-96 bg-indigo-200/40 rounded-full blur-3xl" />
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-gray-950 pt-24 pb-16 px-4 relative overflow-hidden transition-colors duration-300">
+      <div className="absolute -top-24 right-0 w-96 h-96 bg-purple-200/40 dark:bg-purple-900/10 rounded-full blur-3xl transition-colors" />
+      <div className="absolute -bottom-32 left-0 w-96 h-96 bg-indigo-200/40 dark:bg-indigo-900/10 rounded-full blur-3xl transition-colors" />
 
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-[1.1fr,0.9fr] gap-10 items-center">
           {/* Left: Hero content */}
           <div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-semibold text-sm mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 font-semibold text-sm mb-6 transition-colors">
               <Sparkles className="w-4 h-4" />
               <span>Sẵn sàng bắt đầu</span>
             </div>
 
-            <h1 className="text-4xl md:text-5xl font-black text-gray-900 leading-tight mb-4">
+            <h1 className="text-4xl md:text-5xl font-black text-gray-900 dark:text-white leading-tight mb-4 transition-colors">
               {quiz.title || "Bài Quiz"}
             </h1>
 
-            <p className="text-gray-600 text-lg leading-relaxed max-w-xl">
+            <p className="text-gray-600 dark:text-gray-400 text-lg leading-relaxed max-w-xl transition-colors">
               Hít một hơi thật sâu, tập trung và chọn đáp án tốt nhất. Bạn có
               thể quay lại câu trước và chỉ nộp bài khi đã chắc chắn.
             </p>
@@ -192,7 +192,7 @@ const QuizStart: React.FC = () => {
               <button
                 onClick={handleStart}
                 disabled={starting}
-                className="group flex items-center justify-center gap-3 bg-blue-600 text-white px-8 py-4 rounded-2xl font-black text-lg hover:bg-blue-700 transition-all shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                className="group flex items-center justify-center gap-3 bg-purple-600 text-white px-8 py-4 rounded-2xl font-black text-lg hover:bg-purple-700 transition-all shadow-xl active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
               >
                 {starting ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -205,21 +205,21 @@ const QuizStart: React.FC = () => {
 
               <button
                 onClick={() => navigate("/")}
-                className="flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-gray-700 border-2 border-gray-200 hover:border-blue-300 hover:text-blue-700 transition-all bg-white"
+                className="flex items-center justify-center gap-2 px-6 py-4 rounded-2xl font-bold text-gray-700 dark:text-gray-300 border-2 border-gray-200 dark:border-gray-800 hover:border-purple-300 dark:hover:border-purple-700 transition-all bg-white dark:bg-gray-900"
               >
                 Thoát
               </button>
             </div>
 
             {startError && (
-              <div className="mt-4 flex items-start gap-2 text-sm text-red-600 font-semibold">
+              <div className="mt-4 flex items-start gap-2 text-sm text-red-600 dark:text-red-400 font-semibold">
                 <AlertCircle className="w-4 h-4 mt-0.5" />
                 <span>{startError}</span>
               </div>
             )}
 
-            <div className="mt-8 flex items-start gap-3 text-sm text-gray-500">
-              <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5" />
+            <div className="mt-8 flex items-start gap-3 text-sm text-gray-500 dark:text-gray-400 transition-colors">
+              <AlertCircle className="w-5 h-5 text-purple-600 dark:text-purple-400 mt-0.5" />
               <p>
                 Lưu ý: Đáp án đúng chỉ hiển thị sau khi bạn nộp bài. Hãy cố gắng
                 hoàn thành trong một lần làm để có kết quả chính xác nhất.
@@ -228,15 +228,15 @@ const QuizStart: React.FC = () => {
           </div>
 
           {/* Right: Info Card */}
-          <div className="bg-white rounded-[2.5rem] p-8 shadow-2xl border border-blue-100 relative overflow-hidden">
-            <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-blue-400 via-indigo-500 to-purple-600" />
+          <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] p-8 shadow-2xl border border-purple-100 dark:border-gray-800 relative overflow-hidden transition-colors">
+            <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-purple-400 via-indigo-500 to-purple-600" />
 
             <div className="flex items-start justify-between gap-4 mb-6">
               <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-blue-600 font-bold mb-2">
+                <p className="text-xs uppercase tracking-[0.2em] text-purple-600 dark:text-purple-400 font-bold mb-2">
                   Thông tin quiz
                 </p>
-                <h2 className="text-2xl font-black text-gray-900">
+                <h2 className="text-2xl font-black text-gray-900 dark:text-white transition-colors">
                   {quiz.title || "Bài Quiz"}
                 </h2>
               </div>
@@ -248,21 +248,21 @@ const QuizStart: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="bg-gray-50 rounded-2xl p-4">
-                <div className="flex items-center gap-2 text-gray-500 text-xs font-semibold uppercase">
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 transition-colors">
+                <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase">
                   <ClipboardList className="w-4 h-4" />
                   Số câu
                 </div>
-                <p className="text-2xl font-black text-gray-900 mt-2">
+                <p className="text-2xl font-black text-gray-900 dark:text-white mt-2 transition-colors">
                   {questionCount}
                 </p>
               </div>
-              <div className="bg-gray-50 rounded-2xl p-4">
-                <div className="flex items-center gap-2 text-gray-500 text-xs font-semibold uppercase">
+              <div className="bg-gray-50 dark:bg-gray-800/50 rounded-2xl p-4 transition-colors">
+                <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400 text-xs font-semibold uppercase">
                   <Clock className="w-4 h-4" />
                   Thời gian (phút)
                 </div>
-                <p className="text-2xl font-black text-gray-900 mt-2">
+                <p className="text-2xl font-black text-gray-900 dark:text-white mt-2 transition-colors">
                   {timeLimitMinutes ?? "--"}
                 </p>
               </div>
@@ -276,9 +276,9 @@ const QuizStart: React.FC = () => {
               ].map((text, idx) => (
                 <div
                   key={idx}
-                  className="flex items-start gap-3 bg-blue-50/60 rounded-2xl p-4 text-sm text-blue-800"
+                  className="flex items-start gap-3 bg-purple-50/60 dark:bg-purple-900/20 rounded-2xl p-4 text-sm text-purple-800 dark:text-purple-200 transition-colors"
                 >
-                  <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-5 h-5 text-purple-600 dark:text-purple-400 flex-shrink-0 mt-0.5" />
                   <p>{text}</p>
                 </div>
               ))}
