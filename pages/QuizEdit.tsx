@@ -293,7 +293,7 @@ const ConfirmDialog: React.FC<ConfirmDialogProps> = ({
             className={`px-4 py-2 rounded-xl font-bold text-white transition-all ${
               danger
                 ? "bg-red-500 hover:bg-red-600"
-                : "bg-blue-600 hover:bg-blue-700"
+                : "bg-purple-600 hover:bg-purple-700"
             }`}
           >
             {confirmText}
@@ -529,30 +529,30 @@ const QuizEdit: React.FC = () => {
   // =====================
   // UI
   // =====================
-  if (loading) {
+ if (loading) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-white">
-        <Loader2 className="w-12 h-12 text-blue-600 animate-spin mb-4" />
-        <p className="text-gray-500 font-medium animate-pulse">
-          Đang tải quiz...
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+        <Loader2 className="w-12 h-12 text-purple-600 dark:text-purple-400 animate-spin mb-4" />
+        <p className="text-gray-500 dark:text-gray-400 font-black uppercase tracking-widest text-[10px] animate-pulse">
+          Đang nạp dữ liệu Quiz...
         </p>
       </div>
     );
   }
   if (!quiz || total === 0) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] px-4">
-        <div className="max-w-lg w-full bg-white rounded-3xl p-8 border border-gray-100 shadow-xl text-center">
-          <AlertCircle className="w-10 h-10 mx-auto text-red-500 mb-3" />
-          <p className="font-black text-gray-900 text-xl mb-2">
+      <div className="min-h-screen flex items-center justify-center bg-[#f8fafc] dark:bg-gray-950 px-4 transition-colors duration-300">
+        <div className="max-w-lg w-full bg-white dark:bg-gray-900 rounded-[2.5rem] p-10 border border-gray-100 dark:border-gray-800 shadow-2xl text-center">
+          <AlertCircle className="w-16 h-16 mx-auto text-red-500 mb-4" />
+          <p className="font-black text-gray-900 dark:text-white text-2xl mb-2 tracking-tight">
             Không thể mở trang chỉnh sửa
           </p>
-          <p className="text-gray-500">
+          <p className="text-gray-500 dark:text-gray-400 font-medium">
             {pageError || "Không đủ dữ liệu để xác minh quiz theo ID hiện tại."}
           </p>
           <button
             onClick={() => navigate("/generate")}
-            className="mt-6 bg-gray-900 text-white px-6 py-3 rounded-xl font-bold hover:bg-gray-800 transition-all"
+            className="mt-8 w-full bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-4 rounded-2xl font-black hover:opacity-90 transition-all active:scale-95"
           >
             Quay về trang tạo quiz
           </button>
@@ -560,24 +560,28 @@ const QuizEdit: React.FC = () => {
       </div>
     );
   }
+
   return (
-    <div className="pt-24 pb-16 px-4 bg-[#f8fafc] min-h-screen">
+    <div className="pt-24 pb-16 px-4 bg-[#f8fafc] dark:bg-gray-950 min-h-screen transition-colors duration-300">
       <div className="max-w-6xl mx-auto">
         <div className="grid lg:grid-cols-[1fr,270px] gap-8">
+          
           {/* Sidebar question list */}
           <aside className="hidden lg:block lg:order-2">
             <div className="sticky top-28">
-              <div className="space-y-4 max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden pr-2">
-                <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-gray-400 font-bold mb-4">
+              <div className="space-y-4 max-h-[calc(100vh-8rem)] overflow-y-auto overflow-x-hidden pr-2 custom-scrollbar">
+                
+                {/* Card: Danh sách câu hỏi */}
+                <div className="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm p-6">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-black mb-5 ml-1">
                     Danh sách câu hỏi
                   </p>
-                  <div className="grid grid-cols-4 gap-3 max-h-[300px] overflow-y-auto overflow-x-hidden pr-1">
+                  <div className="grid grid-cols-4 gap-2.5 max-h-[300px] overflow-y-auto pr-1">
                     {quiz.questions.map((_, idx) => (
                       <button
                         key={idx}
                         onClick={() => scrollToQuestion(idx)}
-                        className="w-12 h-12 rounded-full bg-gray-200 text-gray-700 font-bold hover:bg-blue-600 hover:text-white transition-colors"
+                        className="w-11 h-11 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-400 font-black text-xs hover:bg-purple-600 hover:text-white dark:hover:bg-purple-500 transition-all active:scale-90"
                         aria-label={`Đi tới câu ${idx + 1}`}
                         type="button"
                       >
@@ -585,400 +589,368 @@ const QuizEdit: React.FC = () => {
                       </button>
                     ))}
                   </div>
-                  <div className="mt-5 text-xs text-gray-400 font-bold">
-                    Tổng: {total} câu
+                  <div className="mt-6 text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest ml-1">
+                    Tổng cộng: {total} câu
                   </div>
                 </div>
 
-                <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
-                  <p className="text-xs uppercase tracking-[0.2em] text-gray-400 font-bold mb-4">
-                    Điều khiển
+                {/* Card: Điều khiển */}
+                <div className="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm p-6">
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 dark:text-gray-500 font-black mb-5 ml-1">
+                    Bảng điều khiển
                   </p>
-                  <div className="grid gap-2">
+                  <div className="grid gap-3">
                     <button
                       onClick={addQuestion}
-                      className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 px-4 py-2 rounded-xl font-black text-gray-700 hover:border-blue-600 hover:text-blue-600 transition-all shadow-sm"
+                      className="flex items-center justify-center gap-2 bg-white dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 px-4 py-3 rounded-2xl font-black text-gray-700 dark:text-gray-300 hover:border-purple-600 dark:hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-all shadow-sm active:scale-95"
                     >
                       <Plus className="w-4 h-4" />
-                      <span>Thêm câu</span>
+                      <span className="text-sm">Thêm câu</span>
                     </button>
+
                     {isDirty && (
                       <button
                         onClick={handleCancel}
-                        className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 px-4 py-2 rounded-xl font-black text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-all shadow-sm"
+                        className="flex items-center justify-center gap-2 bg-white dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 px-4 py-3 rounded-2xl font-black text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all active:scale-95"
                       >
-                        <span>Huỷ thay đổi</span>
+                        <span className="text-sm">Huỷ thay đổi</span>
                       </button>
                     )}
+
                     <button
                       onClick={() => setConfirmAction("save")}
                       disabled={saving || errors.length > 0 || !isDirty}
-                      className="flex items-center justify-center gap-2 bg-blue-600 text-white px-4 py-2 rounded-xl font-black hover:bg-blue-700 transition-all shadow-xl active:scale-95 disabled:opacity-60"
+                      className="flex items-center justify-center gap-2 bg-purple-600 text-white px-4 py-3 rounded-2xl font-black hover:bg-purple-700 transition-all shadow-lg shadow-purple-200 dark:shadow-none active:scale-95 disabled:opacity-40 disabled:grayscale"
                     >
                       {saving ? (
                         <Loader2 className="w-4 h-4 animate-spin" />
                       ) : (
                         <Save className="w-4 h-4" />
                       )}
-                      <span>Lưu quiz</span>
+                      <span className="text-sm text-white">Lưu Quiz</span>
                     </button>
-                    {/* <button
-                      onClick={handlePreviewClick}
-                      className="flex items-center justify-center gap-2 bg-white border-2 border-gray-200 px-4 py-2 rounded-xl font-black text-gray-700 hover:border-emerald-600 hover:text-emerald-700 transition-all shadow-sm"
-                      title="Chuyển sang trang làm bài (preview)"
-                    >
-                      <Play className="w-4 h-4" />
-                      <span>Preview làm bài</span>
-                    </button> */}
-                    <button
-                      onClick={handleShare}
-                      className="px-4 py-2 rounded-xl border-2 border-gray-200 bg-white font-black text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all"
-                    >
-                      Share
-                    </button>
-                    <button
-                      onClick={() => navigate("/generate")}
-                      className="px-4 py-2 rounded-xl border-2 border-gray-200 bg-white font-black text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all"
-                    >
-                      Quay về
-                    </button>
+
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      <button
+                        onClick={handleShare}
+                        className="flex items-center justify-center px-3 py-3 rounded-2xl border-2 border-gray-100 dark:border-gray-800 font-black text-[10px] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all uppercase"
+                      >
+                        Share
+                      </button>
+                      <button
+                        onClick={() => navigate("/generate")}
+                        className="flex items-center justify-center px-3 py-3 rounded-2xl border-2 border-gray-100 dark:border-gray-800 font-black text-[10px] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all uppercase"
+                      >
+                        Quay về
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </aside>
 
-          <div className="lg:order-1">
-            {/* Header */}
+
+<div className="lg:order-1">
+            {/* Header Section */}
             <div className="mb-8">
-              <p className="text-blue-600 font-bold text-xs uppercase tracking-[0.2em] mb-2">
+              <p className="text-purple-600 dark:text-purple-400 font-black text-xs uppercase tracking-[0.2em] mb-3 ml-1">
                 Review & Edit (AI Draft)
               </p>
 
-              <div className="bg-white rounded-3xl border border-gray-100 shadow-sm p-5">
-                <div>
-                  <label className="text-xs font-black text-gray-500 uppercase tracking-[0.18em]">
-                    Tiêu đề quiz
+              <div className="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm p-6 md:p-8 transition-colors duration-300">
+                <div className="mb-6">
+                  <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em] ml-1">
+                    Tiêu đề bộ Quiz
                   </label>
                   <input
                     value={quiz.title}
                     onChange={(e) => updateQuiz({ title: e.target.value })}
-                    className="mt-2 w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-600 focus:outline-none font-bold text-gray-900"
+                    className="mt-2 w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 focus:bg-white dark:focus:bg-gray-800 focus:border-purple-500 focus:outline-none font-bold text-gray-900 dark:text-white transition-all placeholder-gray-400"
                     placeholder="VD: Khám phá Địa lý Việt Nam"
                   />
                 </div>
 
-                <div className="mt-4 grid md:grid-cols-3 gap-4">
+                <div className="grid md:grid-cols-3 gap-6">
+                  {/* Difficulty Setting */}
                   <div>
-                    <label className="text-xs font-black text-gray-500 uppercase tracking-[0.18em]">
+                    <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em] ml-1">
                       Độ khó
                     </label>
                     <select
                       value={quiz.difficulty}
-                      onChange={(e) =>
-                        updateQuiz({ difficulty: e.target.value })
-                      }
-                      className="mt-2 w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-600 focus:outline-none font-bold text-gray-700 bg-white"
+                      onChange={(e) => updateQuiz({ difficulty: e.target.value })}
+                      className="mt-2 w-full px-4 py-3.5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 focus:border-purple-500 focus:outline-none font-bold text-gray-700 dark:text-gray-300 transition-all cursor-pointer"
                     >
-                      <option value="Dễ">Dễ</option>
-                      <option value="Trung bình">Trung bình</option>
-                      <option value="Khó">Khó</option>
+                      <option value="Dễ" className="dark:bg-gray-900">Dễ</option>
+                      <option value="Trung bình" className="dark:bg-gray-900">Trung bình</option>
+                      <option value="Khó" className="dark:bg-gray-900">Khó</option>
                     </select>
                   </div>
+
+                  {/* Time Limit Setting */}
                   <div>
-                    <label className="text-xs font-black text-gray-500 uppercase tracking-[0.18em]">
+                    <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em] ml-1">
                       Thời gian (phút)
                     </label>
                     <input
                       type="number"
                       min={0}
-                      step={1}
                       value={quiz.timeLimit ?? ""}
                       onChange={(e) =>
                         updateQuiz({
-                          timeLimit:
-                            e.target.value === ""
-                              ? undefined
-                              : Math.max(0, Number(e.target.value)),
+                          timeLimit: e.target.value === "" ? undefined : Math.max(0, Number(e.target.value))
                         })
                       }
-                      className="mt-2 w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-600 focus:outline-none font-bold text-gray-900"
-                      placeholder="VD: 45"
+                      className="mt-2 w-full px-4 py-3.5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 focus:border-purple-500 focus:outline-none font-bold text-gray-900 dark:text-white transition-all"
+                      placeholder="0 = không giới hạn"
                     />
-                    <p className="mt-1 text-xs text-gray-400 font-bold">
-                      0 = không giới hạn
-                    </p>
                   </div>
+
+                  {/* Max Attempts Setting */}
                   <div>
-                    <label className="text-xs font-black text-gray-500 uppercase tracking-[0.18em]">
-                      Số lần làm tối đa
+                    <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em] ml-1">
+                      Lượt làm tối đa
                     </label>
                     <input
                       type="number"
                       min={0}
-                      step={1}
                       value={quiz.maxAttempts ?? ""}
                       onChange={(e) =>
                         updateQuiz({
-                          maxAttempts:
-                            e.target.value === ""
-                              ? undefined
-                              : Math.max(0, Number(e.target.value)),
+                          maxAttempts: e.target.value === "" ? undefined : Math.max(0, Number(e.target.value))
                         })
                       }
-                      className="mt-2 w-full px-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-blue-600 focus:outline-none font-bold text-gray-900"
-                      placeholder="VD: 3"
+                      className="mt-2 w-full px-4 py-3.5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 focus:border-purple-500 focus:outline-none font-bold text-gray-900 dark:text-white transition-all"
+                      placeholder="0 = không giới hạn"
                     />
-                    <p className="mt-1 text-xs text-gray-400 font-bold">
-                      0 = không giới hạn
-                    </p>
                   </div>
                 </div>
 
-                <div className="mt-4 flex flex-wrap items-center gap-2">
-                  <span className="px-2 py-0.5 bg-blue-100 text-blue-700 rounded text-xs font-bold uppercase">
+                <div className="mt-8 pt-6 border-t border-gray-50 dark:border-gray-800 flex flex-wrap items-center gap-3">
+                  <span className="px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300 rounded-lg text-[10px] font-black uppercase tracking-wider transition-colors">
                     Đang chỉnh sửa
                   </span>
                   {isDirty ? (
-                    <span className="text-xs text-gray-400 font-bold">
-                      CHƯA LƯU
+                    <span className="text-[10px] text-amber-500 dark:text-amber-400 font-black uppercase tracking-widest flex items-center gap-1.5">
+                      <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" /> Chưa lưu thay đổi
                     </span>
                   ) : (
-                    <span className="text-xs text-emerald-600 font-bold">
-                      ĐÃ LƯU
+                    <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-black uppercase tracking-widest flex items-center gap-1.5">
+                      <CheckCircle2 size={14} /> Đã đồng bộ dữ liệu
                     </span>
                   )}
                 </div>
               </div>
 
-              {/* Validation summary */}
-              <div className="mt-4">
-                {errors.length === 0 ? (
-                  <div className="flex items-center gap-2 text-emerald-700 font-bold text-sm">
-                    <CheckCircle2 className="w-5 h-5" />
-                    <span>Dữ liệu hợp lệ, có thể lưu và đưa vào làm bài.</span>
-                  </div>
-                ) : (
-                  <div className="bg-amber-50 border border-amber-100 rounded-2xl p-4">
-                    <div className="flex items-center gap-2 text-amber-800 font-black mb-2">
-                      <AlertCircle className="w-5 h-5" />
-                      <span>Cần chỉnh trước khi lưu ({errors.length})</span>
-                    </div>
-                    <ul className="text-amber-900 text-sm list-disc pl-5 space-y-1">
-                      {errors.slice(0, 8).map((e, i) => (
-                        <li key={i}>{e}</li>
-                      ))}
-                      {errors.length > 8 && (
-                        <li className="font-bold">
-                          +{errors.length - 8} lỗi khác
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
 
-            {/* All questions */}
-            <div className="space-y-6 mb-8">
-              {quiz.questions.map((q, qIndex) => {
-                const questionIssues = buildQuestionIssues(q);
-                return (
-                  <div
-                    key={qIndex}
-                    ref={(el) => {
-                      questionRefs.current[qIndex] = el;
-                    }}
-                    className="bg-white rounded-[2rem] p-8 md:p-10 shadow-xl shadow-blue-900/5 border border-gray-100 relative overflow-hidden scroll-mt-28"
-                  >
-                    <div className="absolute top-0 left-0 w-2 h-full bg-blue-600" />
-                    <div className="flex items-start justify-between gap-4 mb-6">
-                      <div>
-                        <p className="text-blue-600 font-bold text-xl tracking-[0.2em]">
-                          Câu hỏi {qIndex + 1}
-                        </p>
-                        <p className="text-gray-400 text-xs font-bold mt-1">
-                          Chỉnh nội dung / đáp án / giải thích
-                        </p>
-                        <div className="mt-2">
-                          <select
-                            value={resolveQuestionType(q.questionType)}
-                            onChange={(e) =>
-                              updateQuestion(qIndex, {
-                                questionType: resolveQuestionType(
-                                  e.target.value,
-                                  "singleChoice",
-                                ),
-                              })
-                            }
-                            className="px-3 py-1 rounded-lg border-2 border-gray-100 bg-white text-xs font-black text-gray-600 focus:border-blue-600 focus:outline-none"
-                          >
-                            <option value="multipleStatements">
-                              Câu hỏi nhiều mệnh đề
-                            </option>
-                            <option value="singleChoice">Chọn 1 đáp án</option>
-                            <option value="multipleChoice">
-                              Chọn nhiều đáp án
-                            </option>
-                          </select>
-                        </div>
-                      </div>
-                      <button
-                        onClick={() => removeQuestion(qIndex)}
-                        disabled={quiz.questions.length <= 1}
-                        className="flex items-center gap-2 px-4 py-2 rounded-xl border-2 border-gray-100 text-gray-600 font-bold hover:border-red-200 hover:text-red-600 transition-all disabled:opacity-40"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                        <span>Xóa câu</span>
-                      </button>
-                    </div>
-                    {questionIssues.length > 0 && (
-                      <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-4">
-                        <div className="flex items-center gap-2 text-amber-800 font-black text-sm">
-                          <AlertCircle className="w-4 h-4" />
-                          <span>Cần chỉnh ({questionIssues.length})</span>
-                        </div>
-                        <ul className="mt-2 text-amber-900 text-sm list-disc pl-5 space-y-1">
-                          {questionIssues.map((issue, issueIndex) => (
-                            <li key={issueIndex}>{issue}</li>
-                          ))}
-                        </ul>
-                      </div>
+
+
+
+
+
+
+             {/* Validation summary */}
+            <div className="mt-4">
+              {errors.length === 0 ? (
+                <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-bold text-sm ml-1 transition-colors">
+                  <CheckCircle2 className="w-5 h-5" />
+                  <span>Dữ liệu hợp lệ, có thể lưu và đưa vào làm bài.</span>
+                </div>
+              ) : (
+                <div className="bg-amber-50 dark:bg-amber-900/20 border border-amber-100 dark:border-amber-800/50 rounded-[1.5rem] p-5 transition-colors">
+                  <div className="flex items-center gap-2 text-amber-800 dark:text-amber-400 font-black mb-3">
+                    <AlertCircle className="w-5 h-5" />
+                    <span>Cần chỉnh sửa trước khi lưu ({errors.length} điểm)</span>
+                  </div>
+                  <ul className="text-amber-900/80 dark:text-amber-300/70 text-sm list-disc pl-5 space-y-1 font-medium">
+                    {errors.slice(0, 8).map((e, i) => (
+                      <li key={i}>{e}</li>
+                    ))}
+                    {errors.length > 8 && (
+                      <li className="font-bold opacity-60">
+                        + {errors.length - 8} lỗi khác...
+                      </li>
                     )}
-                    <label className="text-xs font-black text-gray-500 uppercase tracking-[0.18em]">
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* All questions list */}
+          <div className="space-y-8 mb-8">
+            {quiz.questions.map((q, qIndex) => {
+              const questionIssues = buildQuestionIssues(q);
+              return (
+                <div
+                  key={qIndex}
+                  ref={(el) => {
+                    questionRefs.current[qIndex] = el;
+                  }}
+                  className="bg-white dark:bg-gray-900 rounded-[2.5rem] p-8 md:p-12 shadow-xl shadow-purple-900/5 border border-gray-100 dark:border-gray-800 relative overflow-hidden transition-all duration-300 scroll-mt-28 group"
+                >
+                  {/* Accent line */}
+                  <div className="absolute top-0 left-0 w-2 h-full bg-purple-600 transition-all group-hover:w-3" />
+                  
+                  <div className="flex flex-col md:flex-row items-start justify-between gap-6 mb-10">
+                    <div>
+                      <div className="flex items-center gap-3">
+                        <p className="text-purple-600 dark:text-purple-400 font-black text-3xl tracking-tighter">
+                          Câu {qIndex + 1}
+                        </p>
+                        <select
+                          value={resolveQuestionType(q.questionType)}
+                          onChange={(e) =>
+                            updateQuestion(qIndex, {
+                              questionType: resolveQuestionType(e.target.value, "singleChoice"),
+                            })
+                          }
+                          className="px-3 py-1.5 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-gray-50 dark:bg-gray-800 text-[10px] font-black uppercase tracking-widest text-gray-500 dark:text-gray-400 focus:border-purple-500 focus:outline-none transition-all cursor-pointer"
+                        >
+                          <option value="multipleStatements">Nhiều mệnh đề</option>
+                          <option value="singleChoice">Chọn 1 đáp án</option>
+                          <option value="multipleChoice">Chọn nhiều đáp án</option>
+                        </select>
+                      </div>
+                      <p className="text-gray-400 dark:text-gray-500 text-xs font-bold mt-2 ml-1">
+                        Tùy chỉnh nội dung câu hỏi và đáp án bên dưới
+                      </p>
+                    </div>
+                    
+                    <button
+                      onClick={() => removeQuestion(qIndex)}
+                      disabled={quiz.questions.length <= 1}
+                      className="flex items-center gap-2 px-5 py-2.5 rounded-2xl border-2 border-gray-100 dark:border-gray-800 text-gray-400 hover:text-red-500 hover:border-red-100 dark:hover:bg-red-900/20 transition-all disabled:opacity-30 active:scale-95"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                      <span className="text-xs font-black uppercase tracking-widest">Xóa câu</span>
+                    </button>
+                  </div>
+
+                  {/* Individual Question Issues */}
+                  {questionIssues.length > 0 && (
+                    <div className="mb-8 rounded-2xl border border-amber-200 dark:border-amber-900/50 bg-amber-50 dark:bg-amber-900/10 p-5 transition-colors">
+                      <div className="flex items-center gap-2 text-amber-800 dark:text-amber-400 font-black text-xs uppercase tracking-widest">
+                        <AlertCircle className="w-4 h-4" />
+                        <span>Cần lưu ý cho câu hỏi này</span>
+                      </div>
+                      <ul className="mt-3 text-amber-900/80 dark:text-amber-300/70 text-sm list-disc pl-5 space-y-1 font-medium">
+                        {questionIssues.map((issue, issueIndex) => (
+                          <li key={issueIndex}>{issue}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  <div className="mb-10">
+                    <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1">
                       Nội dung câu hỏi
                     </label>
                     <textarea
                       value={q.question}
-                      onChange={(e) =>
-                        updateQuestion(qIndex, { question: e.target.value })
-                      }
-                      className="mt-2 w-full px-4 py-4 rounded-2xl border-2 border-gray-100 focus:border-blue-600 focus:outline-none font-bold text-gray-900 min-h-[120px]"
-                      placeholder="Nhập câu hỏi..."
+                      onChange={(e) => updateQuestion(qIndex, { question: e.target.value })}
+                      className="mt-3 w-full px-6 py-5 rounded-[2rem] border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/40 focus:bg-white dark:focus:bg-gray-800 focus:border-purple-500 focus:outline-none font-bold text-gray-900 dark:text-white min-h-[160px] transition-all leading-relaxed placeholder-gray-400"
+                      placeholder="Nhập nội dung câu hỏi tại đây..."
                     />
-                    <div className="mt-8">
-                      <div className="flex items-center justify-between mb-3">
-                        <span className="text-xs font-black text-gray-500 uppercase tracking-[0.18em]">
-                          {q.questionType === "multipleStatements"
-                            ? "Đáp án (tổ hợp mệnh đề)"
-                            : "Đáp án (A/B/C/D)"}
-                        </span>
-                        <span className="text-xs text-gray-400 font-bold">
-                          {q.questionType === "multipleChoice"
-                            ? "Chọn checkbox để đặt các đáp án đúng"
-                            : "Chọn radio để đặt đáp án đúng"}
-                        </span>
-                      </div>
-                      <div className="grid gap-4">
-                        {ensureOptionsByType(q.questionType, q.options).map(
-                          (opt, optIndex) => {
-                            const selectedIndexes = Array.isArray(
-                              q.correctAnswer,
-                            )
-                              ? q.correctAnswer
-                              : [Number(q.correctAnswer)];
-                            const isCorrect =
-                              selectedIndexes.includes(optIndex);
-                            const optionTag = String.fromCharCode(
-                              65 + optIndex,
-                            );
-                            return (
-                              <div
-                                key={optIndex}
-                                className={`flex items-center gap-3 p-4 rounded-2xl border-2 transition-all
-                              ${
-                                isCorrect
-                                  ? "border-emerald-300 bg-emerald-50"
-                                  : "border-gray-100 bg-gray-50/50"
+                  </div>
+
+                  <div className="mt-8">
+                    <div className="flex items-center justify-between mb-4 px-1">
+                      <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em]">
+                        {q.questionType === "multipleStatements" ? "Tổ hợp mệnh đề" : "Các lựa chọn đáp án"}
+                      </span>
+                      <span className="text-[10px] text-gray-400 dark:text-gray-500 font-black uppercase tracking-widest italic opacity-60">
+                        {q.questionType === "multipleChoice" ? "Chọn nhiều" : "Chọn duy nhất"}
+                      </span>
+                    </div>
+
+                    <div className="grid gap-4">
+                      {ensureOptionsByType(q.questionType, q.options).map((opt, optIndex) => {
+                        const selectedIndexes = Array.isArray(q.correctAnswer) ? q.correctAnswer : [Number(q.correctAnswer)];
+                        const isCorrect = selectedIndexes.includes(optIndex);
+                        const optionTag = String.fromCharCode(65 + optIndex);
+                        
+                        return (
+                          <div
+                            key={optIndex}
+                            className={`flex items-center gap-4 p-5 rounded-[1.5rem] border-2 transition-all duration-300
+                              ${isCorrect 
+                                ? "border-emerald-500/50 bg-emerald-50 dark:bg-emerald-900/20 shadow-md shadow-emerald-100 dark:shadow-none" 
+                                : "border-gray-50 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-800/30"
                               }
                             `}
-                              >
-                                <input
-                                  type={
-                                    q.questionType === "multipleChoice"
-                                      ? "checkbox"
-                                      : "radio"
-                                  }
-                                  name={`correct-${qIndex}`}
-                                  checked={isCorrect}
-                                  onChange={() =>
-                                    setCorrectByIndex(qIndex, optIndex)
-                                  }
-                                  className="w-5 h-5 accent-emerald-600"
-                                  aria-label={`Đáp án đúng ${optionTag}`}
-                                />
-                                <div
-                                  className={`w-10 h-10 rounded-xl flex items-center justify-center font-black border-2 shrink-0
-                                ${
-                                  isCorrect
-                                    ? "bg-emerald-600 text-white border-emerald-600"
-                                    : "bg-white text-gray-400 border-gray-200"
+                          >
+                            <input
+                              type={q.questionType === "multipleChoice" ? "checkbox" : "radio"}
+                              name={`correct-${qIndex}`}
+                              checked={isCorrect}
+                              onChange={() => setCorrectByIndex(qIndex, optIndex)}
+                              className="w-6 h-6 accent-emerald-600 dark:accent-emerald-500 cursor-pointer shrink-0"
+                            />
+                            
+                            <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm shrink-0 border-2 transition-all
+                              ${isCorrect 
+                                ? "bg-emerald-600 text-white border-emerald-600 shadow-lg shadow-emerald-200 dark:shadow-none" 
+                                : "bg-white dark:bg-gray-800 text-gray-400 dark:text-gray-500 border-gray-100 dark:border-gray-700"
+                              }
+                            `}>
+                              {optionTag}
+                            </div>
+
+                            <input
+                              value={opt}
+                              onChange={(e) => updateOption(qIndex, optIndex, e.target.value)}
+                              className={`w-full bg-transparent outline-none font-bold transition-all
+                                ${isCorrect 
+                                  ? "text-emerald-900 dark:text-emerald-100 placeholder-emerald-300" 
+                                  : "text-gray-700 dark:text-gray-300 placeholder-gray-400"
                                 }
                               `}
-                                >
-                                  {optionTag}
-                                </div>
-                                <input
-                                  value={opt}
-                                  onChange={(e) =>
-                                    updateOption(
-                                      qIndex,
-                                      optIndex,
-                                      e.target.value,
-                                    )
-                                  }
-                                  className={`w-full px-4 py-3 rounded-xl border-2 focus:outline-none font-bold
-                                ${
-                                  isCorrect
-                                    ? "border-emerald-200 focus:border-emerald-600 bg-white"
-                                    : "border-gray-100 focus:border-blue-600 bg-white"
-                                }
-                              `}
-                                  placeholder={`Nhập đáp án ${optionTag}...`}
-                                />
-                              </div>
-                            );
-                          },
-                        )}
-                      </div>
-                    </div>
-                    <div className="mt-8">
-                      <label className="text-xs font-black text-gray-500 uppercase tracking-[0.18em]">
-                        Giải thích (hiển thị sau khi làm bài)
-                      </label>
-                      <textarea
-                        value={q.explanation}
-                        onChange={(e) =>
-                          updateQuestion(qIndex, {
-                            explanation: e.target.value,
-                          })
-                        }
-                        className="mt-2 w-full px-4 py-4 rounded-2xl border-2 border-gray-100 focus:border-blue-600 focus:outline-none font-bold text-gray-800 min-h-[110px]"
-                        placeholder="Nhập giải thích..."
-                      />
+                              placeholder={`Nhập đáp án ${optionTag}...`}
+                            />
+                          </div>
+                        );
+                      })}
                     </div>
                   </div>
-                );
-              })}
-            </div>
 
-            {/* Bottom controls */}
-            <div className="flex flex-col gap-4">
-              <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div className="mt-12 pt-8 border-t border-gray-50 dark:border-gray-800">
+                    <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] ml-1">
+                      Giải thích đáp án (Từ AI)
+                    </label>
+                    <textarea
+                      value={q.explanation}
+                      onChange={(e) => updateQuestion(qIndex, { explanation: e.target.value })}
+                      className="mt-3 w-full px-6 py-5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-purple-50/30 dark:bg-purple-900/5 focus:border-purple-500 focus:outline-none font-medium text-gray-800 dark:text-gray-200 min-h-[120px] transition-all leading-relaxed text-sm italic"
+                      placeholder="AI chưa tạo giải thích cho câu này..."
+                    />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+
+
+
+{/* Bottom controls */}
+            <div className="flex flex-col gap-6 mt-12">
+              <div className="flex flex-wrap items-center justify-between gap-4">
                 <div className="flex flex-wrap items-center gap-3">
                   <button
                     onClick={addQuestion}
-                    className="flex items-center gap-2 bg-white border-2 border-gray-200 px-5 py-3 rounded-xl font-black text-gray-700 hover:border-blue-600 hover:text-blue-600 transition-all shadow-sm"
+                    className="flex items-center gap-2 bg-white dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 px-6 py-3 rounded-2xl font-black text-gray-700 dark:text-gray-300 hover:border-purple-600 dark:hover:border-purple-500 hover:text-purple-600 dark:hover:text-purple-400 transition-all shadow-sm active:scale-95"
                   >
                     <Plus className="w-5 h-5" />
-                    <span>Thêm câu</span>
+                    <span>Thêm câu hỏi mới</span>
                   </button>
                 </div>
+
                 <div className="flex flex-wrap items-center gap-3">
                   {isDirty && (
                     <button
                       onClick={handleCancel}
-                      className="flex items-center gap-2 bg-white border-2 border-gray-200 px-5 py-3 rounded-xl font-black text-gray-700 hover:border-gray-400 hover:text-gray-900 transition-all shadow-sm"
+                      className="flex items-center gap-2 bg-white dark:bg-gray-900 border-2 border-gray-100 dark:border-gray-800 px-6 py-3 rounded-2xl font-black text-gray-500 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all active:scale-95"
                     >
                       <span>Huỷ thay đổi</span>
                     </button>
@@ -986,61 +958,58 @@ const QuizEdit: React.FC = () => {
                   <button
                     onClick={() => setConfirmAction("save")}
                     disabled={saving || errors.length > 0 || !isDirty}
-                    className="flex items-center gap-2 bg-blue-600 text-white px-6 py-3 rounded-2xl font-black hover:bg-blue-700 transition-all shadow-xl active:scale-95 disabled:opacity-60"
+                    className="flex items-center gap-2 bg-purple-600 text-white px-8 py-3 rounded-2xl font-black hover:bg-purple-700 transition-all shadow-xl shadow-purple-200 dark:shadow-none active:scale-95 disabled:opacity-40 disabled:grayscale"
                   >
                     {saving ? (
                       <Loader2 className="w-5 h-5 animate-spin" />
                     ) : (
                       <Save className="w-5 h-5" />
                     )}
-                    <span>Lưu quiz</span>
+                    <span>Lưu bộ Quiz</span>
                   </button>
                 </div>
               </div>
-              <div className="min-h-[24px] flex justify-center">
+
+              {/* Status Message Display */}
+              <div className="min-h-[32px] flex justify-center">
                 {saveStatus === "ok" && (
-                  <div className="flex items-center gap-2 text-emerald-700 font-bold">
+                  <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400 font-black text-sm animate-in fade-in zoom-in">
                     <CheckCircle2 className="w-5 h-5" />
-                    <span>Đã lưu thành công.</span>
+                    <span>Dữ liệu đã được cập nhật thành công!</span>
                   </div>
                 )}
                 {saveStatus === "err" && (
-                  <div className="flex items-center gap-2 text-red-600 font-bold">
+                  <div className="flex items-center gap-2 text-red-600 dark:text-red-400 font-black text-sm animate-in shake duration-300">
                     <AlertCircle className="w-5 h-5" />
                     <span>
-                      Không thể lưu.{" "}
                       {errors.length > 0
-                        ? "Vui lòng sửa các lỗi hiển thị phía trên."
-                        : "Có lỗi hệ thống."}
+                        ? "Vui lòng sửa các lỗi đỏ phía trên trước khi lưu."
+                        : "Lỗi hệ thống khi lưu. Vui lòng thử lại."}
                     </span>
                   </div>
                 )}
                 {saveStatus === "idle" && isDirty && (
-                  <div className="text-gray-400 font-bold text-sm">
-                    Có thay đổi chưa lưu.
+                  <div className="text-gray-400 dark:text-gray-500 font-bold text-xs uppercase tracking-widest flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 bg-amber-500 rounded-full animate-pulse" />
+                    Bạn có thay đổi chưa lưu
                   </div>
                 )}
               </div>
-              <div className="flex flex-wrap items-center justify-center gap-3">
+
+              {/* Secondary Actions */}
+              <div className="flex flex-wrap items-center justify-center gap-4 pt-6 border-t border-gray-100 dark:border-gray-800">
                 <button
                   onClick={() => navigate("/generate")}
-                  className="px-5 py-3 rounded-xl border-2 border-gray-200 bg-white font-black text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all"
+                  className="px-6 py-3 rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 font-black text-xs uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
                 >
                   Quay về tạo quiz
                 </button>
-                {/* <button
-                  onClick={handlePreviewClick}
-                  className="flex items-center gap-2 bg-white border-2 border-gray-200 px-5 py-3 rounded-xl font-black text-gray-700 hover:border-emerald-600 hover:text-emerald-700 transition-all shadow-sm"
-                  title="Chuyển sang trang làm bài (preview)"
-                >
-                  <Play className="w-5 h-5" />
-                  <span>Preview làm bài</span>
-                </button> */}
+                
                 <button
                   onClick={handleShare}
-                  className="px-5 py-3 rounded-xl border-2 border-gray-200 bg-white font-black text-gray-700 hover:border-gray-900 hover:text-gray-900 transition-all"
+                  className="px-6 py-3 rounded-2xl border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900 font-black text-xs uppercase tracking-widest text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-white transition-all"
                 >
-                  Share
+                  Share Quiz
                 </button>
               </div>
             </div>
@@ -1048,21 +1017,22 @@ const QuizEdit: React.FC = () => {
         </div>
       </div>
 
+      {/* Re-styled Confirm Dialogs for Dark Mode */}
       <ConfirmDialog
         open={confirmAction === "save"}
-        title="Xác nhận lưu quiz?"
-        description="Bạn có chắc chắn muốn lưu các thay đổi hiện tại?"
-        confirmText="Lưu"
-        cancelText="Hủy"
+        title="Xác nhận lưu thay đổi?"
+        description="Toàn bộ nội dung câu hỏi và cấu hình bộ Quiz sẽ được cập nhật lại vào hệ thống."
+        confirmText="Lưu ngay"
+        cancelText="Để sau"
         onCancel={() => setConfirmAction(null)}
         onConfirm={handleConfirmAction}
       />
 
       <ConfirmDialog
         open={shareResult !== null}
-        title="Chia sẻ"
+        title="Chia sẻ bộ Quiz"
         description={shareResult ?? ""}
-        confirmText="OK"
+        confirmText="Tuyệt vời"
         showCancel={false}
         onCancel={() => setShareResult(null)}
         onConfirm={() => setShareResult(null)}

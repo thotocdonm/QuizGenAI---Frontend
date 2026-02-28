@@ -43,6 +43,7 @@ const Auth: React.FC = () => {
           formData.password,
         );
         setIsLogin(true);
+        setLoading(false);
         return;
       }
 
@@ -65,13 +66,13 @@ const Auth: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen pt-24 pb-12 px-4 flex flex-col justify-center items-center bg-gray-50">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-xl overflow-hidden border border-gray-100">
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-8 text-white text-center">
+    <div className="min-h-screen pt-24 pb-12 px-4 flex flex-col justify-center items-center bg-gray-50 dark:bg-gray-950 transition-colors duration-300">
+      <div className="max-w-md w-full bg-white dark:bg-gray-900 rounded-3xl shadow-xl overflow-hidden border border-gray-100 dark:border-gray-800 transition-colors">
+        <div className="bg-gradient-to-r from-purple-600 to-indigo-600 p-8 text-white text-center">
           <h2 className="text-3xl font-bold mb-2">
             {isLogin ? "Welcome Back" : "Create Account"}
           </h2>
-          <p className="text-blue-100">
+          <p className="text-purple-100 opacity-90">
             {isLogin
               ? "Sign in to start generating quizzes"
               : "Join the community of quiz masters"}
@@ -80,7 +81,7 @@ const Auth: React.FC = () => {
 
         <div className="p-8">
           {error && (
-            <div className="mb-6 bg-red-50 border border-red-100 text-red-700 px-4 py-3 rounded-xl flex items-center space-x-3 text-sm font-medium">
+            <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-900/30 text-red-700 dark:text-red-400 px-4 py-3 rounded-xl flex items-center space-x-3 text-sm font-medium">
               <AlertCircle className="w-5 h-5 flex-shrink-0" />
               <span>{error}</span>
             </div>
@@ -98,7 +99,7 @@ const Auth: React.FC = () => {
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-100 focus:border-blue-500 outline-none transition-all"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-purple-500 outline-none transition-all"
                 />
               </div>
             )}
@@ -113,7 +114,7 @@ const Auth: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, email: e.target.value })
                 }
-                className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-100 focus:border-blue-500 outline-none transition-all"
+                className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-purple-500 outline-none transition-all"
               />
             </div>
 
@@ -127,14 +128,14 @@ const Auth: React.FC = () => {
                 onChange={(e) =>
                   setFormData({ ...formData, password: e.target.value })
                 }
-                className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-100 focus:border-blue-500 outline-none transition-all"
+                className="w-full pl-11 pr-4 py-3 rounded-xl border-2 border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:border-purple-500 outline-none transition-all"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="w-full flex items-center justify-center space-x-2 bg-blue-600 text-white py-4 rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg active:scale-95 disabled:opacity-70"
+              className="w-full flex items-center justify-center space-x-2 bg-purple-600 text-white py-4 rounded-xl font-bold hover:bg-purple-700 transition-all shadow-lg active:scale-95 disabled:opacity-70"
             >
               {loading ? (
                 <Loader2 className="w-5 h-5 animate-spin" />
@@ -147,14 +148,14 @@ const Auth: React.FC = () => {
             </button>
           </form>
 
-          <div className="mt-8 text-center text-sm text-gray-500">
+          <div className="mt-8 text-center text-sm text-gray-500 dark:text-gray-400">
             {isLogin ? "Don't have an account?" : "Already have an account?"}
             <button
               onClick={() => {
                 setIsLogin(!isLogin);
                 setError(null);
               }}
-              className="ml-1 text-blue-600 font-bold hover:underline"
+              className="ml-1 text-purple-600 dark:text-purple-400 font-bold hover:underline"
             >
               {isLogin ? "Sign Up" : "Log In"}
             </button>
