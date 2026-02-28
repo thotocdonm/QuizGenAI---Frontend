@@ -141,6 +141,16 @@ export const api = {
       return response.data;
     },
 
+    searchPublic: async (params: { keyword?: string; page?: number; limit?: number } = {}) => {
+      const query = new URLSearchParams();
+      if (params.keyword) query.set("keyword", params.keyword);
+      if (params.page) query.set("page", String(params.page));
+      if (params.limit) query.set("limit", String(params.limit));
+      const queryString = query.toString();
+      const response = await axiosInstance.get(`/quiz/search${queryString ? `?${queryString}` : ""}`);
+      return response.data;
+    },
+
 
      delete: async (id: string) => {
     const response = await axiosInstance.delete(`/quiz/${id}`);

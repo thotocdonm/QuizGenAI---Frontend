@@ -11,6 +11,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import QuizManage from "./pages/QuizManage";
 import QuizHistory from "./pages/QuizHistory";
 import QuizStart from "./pages/QuizStart";
+import QuizSearch from "./pages/QuizSearch";
 import AttemptDetail from "./pages/AttemptDetail";
 import { ThemeProvider } from "./context/ThemeContext";
 
@@ -19,12 +20,20 @@ const App: React.FC = () => {
     <ThemeProvider>
       <Router>
         {/* THAY ĐỔI: Thêm dark:bg-gray-950 để đổi màu nền toàn trang khi sang chế độ tối */}
-        <div className="min-h-screen bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 selection:bg-purple-100 selection:text-purple-900 transition-colors duration-300">
+        <div className="min-h-screen flex flex-col bg-gray-50 dark:bg-gray-950 text-gray-900 dark:text-gray-100 selection:bg-purple-100 selection:text-purple-900 transition-colors duration-300">
           <Navbar />
-          <main>
+          <main className="flex-1">
             <Routes>
               <Route path="/" element={<Landing />} />
               <Route path="/auth" element={<Auth />} />
+              <Route
+                path="/quiz/search"
+                element={
+                  <ProtectedRoute>
+                    <QuizSearch />
+                  </ProtectedRoute>
+                }
+              />
               <Route
                 path="/generate"
                 element={
