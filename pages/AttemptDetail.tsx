@@ -4,7 +4,7 @@ import { api } from '../services/api';
 import { ChevronLeft, CheckCircle2, XCircle, Info, Timer, Award, Loader2 } from 'lucide-react';
 
 const AttemptDetail: React.FC = () => {
-  const { quizId, number } = useParams();
+  const { id } = useParams();
   const [attempt, setAttempt] = useState<any>(null);
   const [quiz, setQuiz] = useState<any>(null);
   const [loading, setLoading] = useState(true);
@@ -14,15 +14,9 @@ const AttemptDetail: React.FC = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Gọi song song: 1. Dữ liệu lần làm, 2. Nội dung bộ Quiz gốc
-        const [attemptRes, quizRes] = await Promise.all([
-          api.attempt.getAttemptByNumber(quizId!, Number(number)),
-          api.quiz.getById(quizId!)
-        ]);
-
-        // Vì Backend getAttemptByQuizId trả về Mảng, ta lấy phần tử đầu tiên
-        setAttempt(Array.isArray(attemptRes) ? attemptRes[0] : attemptRes);
-        setQuiz(quizRes.data || quizRes); 
+        const data = await api.attempt.getAttemptById(id!);
+        setAttempt(data.attempt);
+        setQuiz(data.quiz);        
       } catch (err) {
         console.error("Lỗi lấy chi tiết:", err);
       } finally {
@@ -30,7 +24,7 @@ const AttemptDetail: React.FC = () => {
       }
     };
     fetchData();
-  }, [quizId, number]);
+  }, [id]);
 
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-950">

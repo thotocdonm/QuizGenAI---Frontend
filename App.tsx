@@ -12,6 +12,7 @@ import QuizManage from "./pages/QuizManage";
 import QuizHistory from "./pages/QuizHistory";
 import QuizStart from "./pages/QuizStart";
 import AttemptDetail from "./pages/AttemptDetail";
+import ListPoints from "./pages/ListPoints";
 import { ThemeProvider } from "./context/ThemeContext";
 
 const App: React.FC = () => {
@@ -75,10 +76,18 @@ const App: React.FC = () => {
                 }
               />
               <Route
-                path="/history/detail/:quizId/:number"
+                path="/history/detail/:id"
                 element={
                   <ProtectedRoute>
                     <AttemptDetail />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/manage/:id"
+                element={
+                  <ProtectedRoute>
+                    <ListPoints />
                   </ProtectedRoute>
                 }
               />

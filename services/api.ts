@@ -161,12 +161,15 @@ export const api = {
       return response.data;
     },
   
-   // THÊM HÀM NÀY VÀO ĐÂY:
-    getAttemptByNumber: async (quizId: string, attemptNumber: number) => {
-      // Đường dẫn này phải khớp với router.get("/:id/:number", ...) ở Backend
-      const response = await axiosInstance.get(`/attempt/${quizId}/${attemptNumber}`);
+    getAttemptById: async (id: string) => {
+      const response = await axiosInstance.get(`/attempt/${id}`);
       return response.data;
-    }
+    },
+
+    getAttemptByQuiz: async (quizId: string) => {
+      const response = await axiosInstance.get(`/attempt/${quizId}/quiz`);
+      return response.data;
+    },
   }
   
 };
