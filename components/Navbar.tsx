@@ -64,7 +64,7 @@ const Navbar: React.FC = () => {
               <div className="relative">
                 <button
                   onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  className="flex items-center space-x-2 px-3 py-1.5 bg-gray-50 rounded-full hover:bg-gray-100 transition-all border border-gray-200"
+                  className="flex items-center space-x-2 px-3 py-1.5 bg-gray-50 dark:bg-gray-950 rounded-full hover:bg-gray-100 dark:hover:bg-gray-900 transition-all border border-gray-200 dark:border-gray-800"
                 >
                   <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center">
                     <User className="w-4 h-4 text-purple-600" />
@@ -82,7 +82,7 @@ const Navbar: React.FC = () => {
                     <Link
                       to="/manage"
                       onClick={() => setIsDropdownOpen(false)}
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600"
+                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
                     >
                       <LayoutDashboard className="w-4 h-4" />
                       <span>Quản lý Quiz</span>
@@ -91,7 +91,7 @@ const Navbar: React.FC = () => {
                     <Link
                       to="/history"
                       onClick={() => setIsDropdownOpen(false)}
-                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 hover:bg-purple-50 hover:text-purple-600"
+                      className="flex items-center space-x-2 px-4 py-2 text-sm text-gray-700 dark:text-gray-300 hover:bg-purple-50 dark:hover:bg-purple-900/30 hover:text-purple-600 dark:hover:text-purple-400 transition-colors"
                     >
                       <History className="w-4 h-4" />
                       <span>Lịch sử làm bài</span>
@@ -99,7 +99,7 @@ const Navbar: React.FC = () => {
                     <hr className="my-1 border-gray-50" />
                     <button
                       onClick={handleLogoutRequest}
-                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50"
+                      className="w-full flex items-center space-x-2 px-4 py-2 text-sm text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
                     >
                       <LogOut className="w-4 h-4" />
                       <span>Đăng xuất</span>
