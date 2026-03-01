@@ -673,14 +673,11 @@ const QuizEdit: React.FC = () => {
                     />
                     <label className="flex items-center justify-between gap-4 px-4 py-3 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 cursor-pointer select-none shrink-0 min-w-[220px]">
                       <div className="flex flex-col">
-                        <span className="text-[10px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.18em]">
-                          Chia sẻ cộng đồng
-                        </span>
                         <span
-                          className={`text-[10px] font-black uppercase tracking-widest ${
+                          className={`text-[12px] font-black uppercase tracking-widest ${
                             quiz.private
                               ? "text-gray-400 dark:text-gray-500"
-                              : "text-emerald-600 dark:text-emerald-400"
+                              : "text-purple-600 dark:text-purple-400"
                           }`}
                         >
                           {quiz.private ? "Riêng tư" : "Công khai"}
@@ -690,7 +687,7 @@ const QuizEdit: React.FC = () => {
                         className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
                           quiz.private
                             ? "bg-gray-300 dark:bg-gray-700"
-                            : "bg-emerald-500"
+                            : "bg-purple-600 dark:bg-purple-500"
                         }`}
                       >
                         <span
