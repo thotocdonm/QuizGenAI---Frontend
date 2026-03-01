@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { api } from '../services/api';
-import { 
-  Clock, 
-  Award, 
-  Timer, 
-  Calendar, 
-  Loader2, 
-  BarChart3, 
+import {
+  Clock,
+  Award,
+  Timer,
+  Calendar,
+  Loader2,
+  BarChart3,
   TrendingUp,
   ChevronLeft,
   ChevronRight
@@ -27,7 +27,14 @@ const QuizHistory: React.FC = () => {
       try {
         setLoading(true);
         const data = await api.attempt.getUserAttempts();
-        setHistory(Array.isArray(data) ? data : []);
+        console.log("attempt data:", data);
+        setHistory(
+          Array.isArray(data)
+            ? data
+            : Array.isArray(data.data)
+              ? data.data
+              : []
+        );
       } catch (err) {
         console.error("Lỗi fetch lịch sử:", err);
       } finally {
@@ -71,8 +78,8 @@ const QuizHistory: React.FC = () => {
         <div className="bg-white dark:bg-gray-900 rounded-[2.5rem] p-16 text-center border-2 border-dashed border-gray-100 dark:border-gray-800 transition-colors">
           <BarChart3 className="mx-auto w-12 h-12 text-gray-300 dark:text-gray-700 mb-4" />
           <p className="text-gray-500 dark:text-gray-400 font-medium">Bạn chưa thực hiện bài thi nào.</p>
-          <button 
-            onClick={() => navigate('/generate')} 
+          <button
+            onClick={() => navigate('/generate')}
             className="mt-4 text-purple-600 dark:text-purple-400 font-black hover:underline"
           >
             Làm bài ngay &rarr;
@@ -94,10 +101,10 @@ const QuizHistory: React.FC = () => {
                 </thead>
                 <tbody className="divide-y divide-gray-100 dark:divide-gray-800">
                   {currentItems.map((item) => (
-                    <tr 
-                      key={item._id} 
+                    <tr
+                      key={item._id}
                       className="hover:bg-purple-50/30 dark:hover:bg-purple-900/20 transition-all group cursor-pointer"
-                      onClick={() => navigate(`/history/detail/${item.quiz}/${item.attemptNumber}`)}
+                      onClick={() => navigate(`/history/detail/${item._id}`)}
                     >
                       <td className="px-8 py-5">
                         <div className="font-black text-gray-900 dark:text-white group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
@@ -153,11 +160,10 @@ const QuizHistory: React.FC = () => {
                   <button
                     key={i}
                     onClick={() => setCurrentPage(i + 1)}
-                    className={`w-10 h-10 rounded-xl font-black text-xs transition-all ${
-                      currentPage === i + 1
+                    className={`w-10 h-10 rounded-xl font-black text-xs transition-all ${currentPage === i + 1
                         ? "bg-purple-600 text-white shadow-lg shadow-purple-200 dark:shadow-none"
                         : "bg-white dark:bg-gray-900 text-gray-400 border-2 border-gray-100 dark:border-gray-800 hover:bg-gray-50 dark:hover:bg-gray-800"
-                    }`}
+                      }`}
                   >
                     {i + 1}
                   </button>
