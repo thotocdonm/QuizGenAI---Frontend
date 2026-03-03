@@ -40,30 +40,13 @@ const QuizSearch: React.FC = () => {
   useEffect(() => {
     let active = true;
 
-    if (!keyword) {
-      setQuizzes([]);
-      setPagination({
-        page,
-        limit: ITEMS_PER_PAGE,
-        total: 0,
-        totalPages: 0,
-        hasNext: false,
-        hasPrev: page > 1,
-      });
-      setError(null);
-      setLoading(false);
-      return () => {
-        active = false;
-      };
-    }
-
     const fetchQuizzes = async () => {
       setLoading(true);
       setError(null);
 
       try {
         const response = await api.quiz.searchPublic({
-          keyword,
+          keyword: keyword || undefined,
           page,
           limit: ITEMS_PER_PAGE,
         });
@@ -173,7 +156,7 @@ const QuizSearch: React.FC = () => {
                 <p className="text-gray-500 dark:text-gray-400 font-medium">
                   {hasKeyword
                     ? `Result for "${keyword}"`
-                    : "Enter keywords to explore the public quiz."}
+                    : "Search for public quizzes to play with friends!"}
                 </p>
               </div>
             </div>
@@ -205,13 +188,6 @@ const QuizSearch: React.FC = () => {
             <div className="min-h-[40vh] flex items-center justify-center">
               <Loader2 className="w-10 h-10 text-purple-600 animate-spin" />
             </div>
-          ) : !hasKeyword ? (
-            <div className="bg-white dark:bg-gray-900 rounded-2xl p-10 text-center border border-gray-200 dark:border-gray-800">
-              <AlertCircle className="mx-auto w-12 h-12 text-gray-300 dark:text-gray-700 mb-4" />
-              <p className="text-gray-500 dark:text-gray-400 font-medium">
-                Enter keywords to start searching for public quizzes.
-              </p>
-            </div>
           ) : error ? (
             <div className="bg-white dark:bg-gray-900 rounded-2xl p-10 text-center border border-gray-200 dark:border-gray-800">
               <AlertCircle className="mx-auto w-12 h-12 text-red-500 mb-4" />
@@ -223,7 +199,9 @@ const QuizSearch: React.FC = () => {
             <div className="bg-white dark:bg-gray-900 rounded-2xl p-10 text-center border border-gray-200 dark:border-gray-800">
               <AlertCircle className="mx-auto w-12 h-12 text-gray-300 dark:text-gray-700 mb-4" />
               <p className="text-gray-500 dark:text-gray-400 font-medium">
-                Không tìm thấy quiz phù hợp. Hãy thử từ khóa khác nhé.
+                {hasKeyword
+                  ? "Không tìm thấy quiz phù hợp. Hãy thử từ khóa khác nhé."
+                  : "Chưa có quiz công khai nào để hiển thị."}
               </p>
             </div>
           ) : (
