@@ -76,18 +76,20 @@ const Navbar: React.FC = () => {
               onSubmit={handleSearchSubmit}
               className="flex items-center gap-2"
             >
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <div className="flex items-center gap-3 pl-3 pr-4 py-2 rounded-2xl bg-purple-50/80 dark:bg-purple-900/20 border border-purple-100/80 dark:border-purple-800/60 shadow-[0_10px_24px_rgba(124,58,237,0.12)] focus-within:ring-2 focus-within:ring-purple-400/40 transition-all">
+                <div className="w-8 h-8 rounded-xl bg-white dark:bg-gray-900 flex items-center justify-center text-purple-600 shadow-sm border border-purple-100/80 dark:border-gray-800">
+                  <Search className="w-4 h-4" />
+                </div>
                 <input
                   value={searchKeyword}
                   onChange={(event) => setSearchKeyword(event.target.value)}
                   placeholder="Enter keywords to search..."
-                  className="w-56 lg:w-72 pl-9 pr-4 py-2 rounded-full bg-gray-50 dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-purple-500/40 focus:border-purple-500 transition-all"
+                  className="w-56 lg:w-72 bg-transparent text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 focus:outline-none"
                 />
               </div>
               <button
                 type="submit"
-                className="px-4 py-2 rounded-full bg-purple-600 text-white text-sm font-semibold hover:bg-purple-700 transition-all"
+                className="px-5 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-purple-500 to-indigo-600 text-white text-sm font-bold shadow-lg shadow-purple-500/30 hover:from-purple-700 hover:via-purple-600 hover:to-indigo-700 hover:shadow-purple-500/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-purple-400/60 active:scale-95 transition-all"
               >
                 Search
               </button>

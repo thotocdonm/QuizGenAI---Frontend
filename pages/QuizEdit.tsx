@@ -14,7 +14,7 @@ import { api } from "../services/api";
 // =====================
 // Types (UI)
 // =====================
-type Difficulty = "Dễ" | "Trung bình" | "Khó" | string;
+type Difficulty = "easy" | "medium" | "hard" | string;
 type QuestionType = "multipleStatements" | "singleChoice" | "multipleChoice";
 
 type QuizQuestion = {
@@ -199,7 +199,7 @@ const mapBackendQuizToUI = (bq: BackendQuiz): Quiz => {
       : resolveQuestionType(bq.questionType, "singleChoice");
   return {
     title: bq.title ?? "",
-    difficulty: bq.difficulty ?? "Trung bình",
+    difficulty: bq.difficulty ?? "medium",
     questionType: bq.questionType ?? "singleChoice",
     timeLimit:
       typeof bq.timeLimit === "number"
@@ -677,7 +677,7 @@ const QuizEdit: React.FC = () => {
                         placeholder="VD: Khám phá Địa lý Việt Nam"
                       />
                     </div>
-                    <div className="w-full md:w-auto flex flex-col items-start">
+                    <div className="w-full md:w-auto flex flex-col items-center">
                       <span className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em]">
                         Độ khó
                       </span>
@@ -739,9 +739,6 @@ const QuizEdit: React.FC = () => {
                   <div className="flex flex-col justify-end">
                     <label className="flex items-center justify-between gap-4 px-4 py-3 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 cursor-pointer select-none">
                       <div className="flex flex-col">
-                        <span className="text-[12px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.18em]">
-                          Công khai
-                        </span>
                         <span
                           className={`text-[12px] font-black uppercase tracking-widest ${
                             quiz.private

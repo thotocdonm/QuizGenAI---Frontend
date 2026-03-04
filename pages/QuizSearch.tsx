@@ -164,17 +164,17 @@ const QuizSearch: React.FC = () => {
             <form onSubmit={handleSubmit} className="w-full lg:flex-1">
               <div className="flex items-center gap-3 w-full">
                 <div className="relative flex-1 w-full">
-                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+                  <Search className="absolute left-5 top-1/2 -translate-y-1/2 w-6 h-6 text-gray-400" />
                   <input
                     value={queryInput}
                     onChange={(event) => setQueryInput(event.target.value)}
                     placeholder="Enter keywords to search..."
-                    className="w-full pl-14 pr-5 py-4 rounded-3xl bg-white dark:bg-gray-900 text-base text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all"
+                    className="w-full pl-14 pr-5 py-4 rounded-2xl bg-white dark:bg-gray-900 text-base text-gray-700 dark:text-gray-200 border border-gray-200 dark:border-gray-800 focus:outline-none focus:ring-2 focus:ring-purple-500/30 focus:border-purple-500 transition-all"
                   />
                 </div>
                 <button
                   type="submit"
-                  className="px-6 py-4 rounded-3xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-base font-bold hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg shadow-purple-500/20 active:scale-95"
+                  className="px-6 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-base font-bold hover:from-purple-700 hover:to-indigo-700 transition-all shadow-lg shadow-purple-500/20 active:scale-95"
                 >
                   Search
                 </button>
@@ -200,12 +200,91 @@ const QuizSearch: React.FC = () => {
               <AlertCircle className="mx-auto w-12 h-12 text-gray-300 dark:text-gray-700 mb-4" />
               <p className="text-gray-500 dark:text-gray-400 font-medium">
                 {hasKeyword
-                  ? "Không tìm thấy quiz phù hợp. Hãy thử từ khóa khác nhé."
-                  : "Chưa có quiz công khai nào để hiển thị."}
+                  ? "No matching puzzles were found. Please try a different keyword."
+                  : "There are no publicly available quizzes to display yet."}
               </p>
             </div>
           ) : (
             <>
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div className="flex items-center gap-3">
+                  <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
+                    Found {total} {total > 1 ? "quizzes" : "quiz"}:
+                  </span>
+                  {keyword && (
+                    <span className="inline-flex items-center rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 px-3 py-1 text-xs font-bold">
+                      #{keyword}
+                    </span>
+                  )}
+                </div>
+                {keyword && (
+                  <button
+                    onClick={() => updateParams("", 1)}
+                    className="text-sm font-bold text-purple-600 dark:text-purple-400 hover:underline"
+                  >
+                    Clear filter
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 gap-4">
+                {quizzes.map((quiz) => {
+                  const questionCount =
+                    quiz?.numQuestions ?? quiz?.questions?.length ?? 0;
+
+                  return (
+                    <div
+                      key={quiz._id}
+                      className="rounded-2xl border border-gray-200 dark:border-gray-700/70 bg-white dark:bg-gray-900/70 px-6 py-5 shadow-sm dark:shadow-lg dark:shadow-black/30 hover:border-purple-200 dark:hover:border-purple-600/60 transition-colors"
+                    >
+                      <div className="flex flex-col md:flex-row md:items-center gap-4">
+                        <div className="flex items-center gap-4 flex-1">
+                          <div className="h-12 w-12 rounded-2xl bg-purple-50 dark:bg-purple-900/50 flex items-center justify-center">
+                            <ClipboardList className="w-6 h-6 text-purple-600 dark:text-purple-300" />
+                          </div>
+                          <div className="flex-1">
+                            <div className="flex items-start gap-3">
+                              <h3 className="text-lg font-black text-gray-900 dark:text-white leading-snug">
+                                {quiz?.title || "No Title"}
+                              </h3>
+                              <span
+                                className={`shrink-0 px-3 py-1 text-xs font-black rounded-full ${getDifficultyClasses(
+                                  quiz?.difficulty,
+                                )}`}
+                              >
+                                {quiz?.difficulty?.toUpperCase() || "MEDIUM"}
+                              </span>
+                            </div>
+
+                            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
+                              <span className="inline-flex items-center gap-1.5">
+                                <ClipboardList className="w-4 h-4" />
+                                {questionCount} câu
+                              </span>
+                              <span className="inline-flex items-center gap-1.5">
+                                <Clock className="w-4 h-4" />
+                                {formatTimeLimit(quiz?.timeLimit)}
+                              </span>
+                              <span className="inline-flex items-center gap-1.5">
+                                <ClipboardList className="w-4 h-4" />
+                                {formatMaxAttempts(quiz?.maxAttempts)}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => navigate(`/quiz/${quiz._id}/start`)}
+                          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gray-900 text-white px-5 py-3 text-sm font-black hover:bg-gray-800 transition-all active:scale-95 dark:bg-gray-800/90 dark:text-gray-100 dark:border dark:border-gray-700/80 dark:hover:bg-gray-700/80 dark:hover:border-purple-500/60"
+                        >
+                          <Play className="w-4 h-4" />
+                          Play Quiz
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
               {totalPages > 1 && (
                 <div className="mt-12 flex flex-col sm:flex-row items-center justify-center gap-4">
                   <button
@@ -248,85 +327,6 @@ const QuizSearch: React.FC = () => {
                   </button>
                 </div>
               )}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
-                <div className="flex items-center gap-3">
-                  <span className="text-sm text-gray-500 dark:text-gray-400 font-semibold">
-                    Found {total} quiz:
-                  </span>
-                  {keyword && (
-                    <span className="inline-flex items-center rounded-full bg-purple-100 text-purple-700 dark:bg-purple-900/40 dark:text-purple-300 px-3 py-1 text-xs font-bold">
-                      #{keyword}
-                    </span>
-                  )}
-                </div>
-                {keyword && (
-                  <button
-                    onClick={() => updateParams("", 1)}
-                    className="text-sm font-bold text-purple-600 dark:text-purple-400 hover:underline"
-                  >
-                    Clear filter
-                  </button>
-                )}
-              </div>
-
-              <div className="grid grid-cols-1 gap-4">
-                {quizzes.map((quiz) => {
-                  const questionCount =
-                    quiz?.numQuestions ?? quiz?.questions?.length ?? 0;
-
-                  return (
-                    <div
-                      key={quiz._id}
-                      className="rounded-2xl border border-gray-200 dark:border-gray-700/70 bg-white dark:bg-gray-900/70 px-6 py-5 shadow-sm dark:shadow-lg dark:shadow-black/30 hover:border-purple-200 dark:hover:border-purple-600/60 transition-colors"
-                    >
-                      <div className="flex flex-col md:flex-row md:items-center gap-4">
-                        <div className="flex items-center gap-4 flex-1">
-                          <div className="h-12 w-12 rounded-2xl bg-purple-50 dark:bg-purple-900/50 flex items-center justify-center">
-                            <ClipboardList className="w-6 h-6 text-purple-600 dark:text-purple-300" />
-                          </div>
-                          <div className="flex-1">
-                            <div className="flex items-start gap-3">
-                              <h3 className="text-lg font-black text-gray-900 dark:text-white leading-snug">
-                                {quiz?.title || "Quiz chưa đặt tên"}
-                              </h3>
-                              <span
-                                className={`shrink-0 px-3 py-1 text-xs font-black rounded-full ${getDifficultyClasses(
-                                  quiz?.difficulty,
-                                )}`}
-                              >
-                                {quiz?.difficulty || "Không rõ"}
-                              </span>
-                            </div>
-
-                            <div className="mt-2 flex flex-wrap items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
-                              <span className="inline-flex items-center gap-1.5">
-                                <ClipboardList className="w-4 h-4" />
-                                {questionCount} câu
-                              </span>
-                              <span className="inline-flex items-center gap-1.5">
-                                <Clock className="w-4 h-4" />
-                                {formatTimeLimit(quiz?.timeLimit)}
-                              </span>
-                              <span className="inline-flex items-center gap-1.5">
-                                <ClipboardList className="w-4 h-4" />
-                                {formatMaxAttempts(quiz?.maxAttempts)}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        <button
-                          onClick={() => navigate(`/quiz/${quiz._id}/start`)}
-                          className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gray-900 text-white px-5 py-3 text-sm font-black hover:bg-gray-800 transition-all active:scale-95 dark:bg-gray-800/90 dark:text-gray-100 dark:border dark:border-gray-700/80 dark:hover:bg-gray-700/80 dark:hover:border-purple-500/60"
-                        >
-                          <Play className="w-4 h-4" />
-                          Play Quiz
-                        </button>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
             </>
           )}
         </div>
