@@ -366,9 +366,6 @@ const QuizEdit: React.FC = () => {
     };
     fetchQuiz();
   }, [id]);
-  // =====================
-  // Derived
-  // =====================
   const total = quiz?.questions.length ?? 0;
   const errors = useMemo(() => {
     const list: string[] = [];
@@ -385,9 +382,16 @@ const QuizEdit: React.FC = () => {
     });
     return list;
   }, [quiz]);
-  // =====================
-  // Mutations
-  // =====================
+  const difficultyBadge = useMemo(() => {
+    const level = String(quiz?.difficulty ?? "").toLowerCase();
+    if (level.includes("dễ") || level.includes("easy")) {
+      return "bg-emerald-200 text-emerald-900 dark:bg-emerald-900/40 dark:text-emerald-300";
+    }
+    if (level.includes("khó") || level.includes("hard")) {
+      return "bg-rose-200 text-rose-900 dark:bg-rose-900/40 dark:text-rose-300";
+    }
+    return "bg-amber-200 text-amber-900 dark:bg-amber-900/40 dark:text-amber-300";
+  }, [quiz?.difficulty]);
   const updateQuiz = (patch: Partial<Quiz>) => {
     if (!quiz) return;
     setQuiz({ ...quiz, ...patch });
@@ -661,79 +665,32 @@ const QuizEdit: React.FC = () => {
 
               <div className="bg-white dark:bg-gray-900 rounded-[2rem] border border-gray-100 dark:border-gray-800 shadow-sm p-6 md:p-8 transition-colors duration-300">
                 <div className="mb-6">
-                  <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em] ml-1">
-                    Tiêu đề bộ Quiz
-                  </label>
-                  <div className="mt-2 flex flex-col md:flex-row md:items-center gap-4">
-                    <input
-                      value={quiz.title}
-                      onChange={(e) => updateQuiz({ title: e.target.value })}
-                      className="w-full md:flex-1 px-6 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 focus:bg-white dark:focus:bg-gray-800 focus:border-purple-500 focus:outline-none font-bold text-gray-900 dark:text-white transition-all placeholder-gray-400"
-                      placeholder="VD: Khám phá Địa lý Việt Nam"
-                    />
-                    <label className="flex items-center justify-between gap-4 px-4 py-3 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 cursor-pointer select-none shrink-0 min-w-[220px]">
-                      <div className="flex flex-col">
-                        <span
-                          className={`text-[12px] font-black uppercase tracking-widest ${
-                            quiz.private
-                              ? "text-gray-400 dark:text-gray-500"
-                              : "text-purple-600 dark:text-purple-400"
-                          }`}
-                        >
-                          {quiz.private ? "Riêng tư" : "Công khai"}
-                        </span>
-                      </div>
-                      <span
-                        className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
-                          quiz.private
-                            ? "bg-gray-300 dark:bg-gray-700"
-                            : "bg-purple-600 dark:bg-purple-500"
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
-                            quiz.private ? "translate-x-1" : "translate-x-6"
-                          }`}
-                        />
-                      </span>
+                  <div className="flex flex-col md:flex-row md:items-center gap-4">
+                    <div className="flex-1 min-w-0">
+                      <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em] ml-1">
+                        Tiêu đề bộ Quiz
+                      </label>
                       <input
-                        type="checkbox"
-                        className="sr-only"
-                        checked={!quiz.private}
-                        onChange={(e) =>
-                          updateQuiz({ private: !e.target.checked })
-                        }
-                        aria-label="Chia sẻ quiz lên cộng đồng"
+                        value={quiz.title}
+                        onChange={(e) => updateQuiz({ title: e.target.value })}
+                        className="mt-2 w-full px-6 py-4 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 focus:bg-white dark:focus:bg-gray-800 focus:border-purple-500 focus:outline-none font-bold text-gray-900 dark:text-white transition-all placeholder-gray-400"
+                        placeholder="VD: Khám phá Địa lý Việt Nam"
                       />
-                    </label>
+                    </div>
+                    <div className="w-full md:w-auto flex flex-col items-start">
+                      <span className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em]">
+                        Độ khó
+                      </span>
+                      <span
+                        className={`mt-2 inline-flex items-center justify-center px-4 py-2 rounded-full text-sm font-black uppercase tracking-wide shadow-sm ring-1 ring-inset ring-black/10 dark:ring-white/10 ${difficultyBadge}`}
+                      >
+                        {quiz.difficulty || "MEDIUM"}
+                      </span>
+                    </div>
                   </div>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-6">
-                  {/* Difficulty Setting */}
-                  <div>
-                    <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em] ml-1">
-                      Độ khó
-                    </label>
-                    <select
-                      value={quiz.difficulty}
-                      onChange={(e) =>
-                        updateQuiz({ difficulty: e.target.value })
-                      }
-                      className="mt-2 w-full px-4 py-3.5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 focus:border-purple-500 focus:outline-none font-bold text-gray-700 dark:text-gray-300 transition-all cursor-pointer"
-                    >
-                      <option value="Dễ" className="dark:bg-gray-900">
-                        Dễ
-                      </option>
-                      <option value="Trung bình" className="dark:bg-gray-900">
-                        Trung bình
-                      </option>
-                      <option value="Khó" className="dark:bg-gray-900">
-                        Khó
-                      </option>
-                    </select>
-                  </div>
-
                   {/* Time Limit Setting */}
                   <div>
                     <label className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.18em] ml-1">
@@ -776,6 +733,48 @@ const QuizEdit: React.FC = () => {
                       className="mt-2 w-full px-4 py-3.5 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 focus:border-purple-500 focus:outline-none font-bold text-gray-900 dark:text-white transition-all"
                       placeholder="0 = không giới hạn"
                     />
+                  </div>
+
+                  {/* Public Toggle */}
+                  <div className="flex flex-col justify-end">
+                    <label className="flex items-center justify-between gap-4 px-4 py-3 rounded-2xl border-2 border-gray-50 dark:border-gray-800 bg-gray-50 dark:bg-gray-800/50 cursor-pointer select-none">
+                      <div className="flex flex-col">
+                        <span className="text-[12px] font-black text-gray-500 dark:text-gray-400 uppercase tracking-[0.18em]">
+                          Công khai
+                        </span>
+                        <span
+                          className={`text-[12px] font-black uppercase tracking-widest ${
+                            quiz.private
+                              ? "text-gray-400 dark:text-gray-500"
+                              : "text-purple-600 dark:text-purple-400"
+                          }`}
+                        >
+                          {quiz.private ? "Riêng tư" : "Công khai"}
+                        </span>
+                      </div>
+                      <span
+                        className={`relative inline-flex h-7 w-12 items-center rounded-full transition-colors ${
+                          quiz.private
+                            ? "bg-gray-300 dark:bg-gray-700"
+                            : "bg-purple-600 dark:bg-purple-500"
+                        }`}
+                      >
+                        <span
+                          className={`inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${
+                            quiz.private ? "translate-x-1" : "translate-x-6"
+                          }`}
+                        />
+                      </span>
+                      <input
+                        type="checkbox"
+                        className="sr-only"
+                        checked={!quiz.private}
+                        onChange={(e) =>
+                          updateQuiz({ private: !e.target.checked })
+                        }
+                        aria-label="Chia sẻ quiz lên cộng đồng"
+                      />
+                    </label>
                   </div>
                 </div>
 

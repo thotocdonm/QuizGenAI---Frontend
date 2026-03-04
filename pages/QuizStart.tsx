@@ -160,7 +160,9 @@ const QuizStart: React.FC = () => {
   if (!quiz) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white dark:bg-gray-950 transition-colors duration-300">
-        <p className="text-gray-500 dark:text-gray-400 font-medium">Không có dữ liệu quiz.</p>
+        <p className="text-gray-500 dark:text-gray-400 font-medium">
+          Không có dữ liệu quiz.
+        </p>
       </div>
     );
   }
@@ -243,7 +245,7 @@ const QuizStart: React.FC = () => {
               <span
                 className={`px-3 py-1 rounded-full text-xs font-bold uppercase ${difficultyBadge}`}
               >
-                {quiz.difficulty || "Trung bình"}
+                {quiz.difficulty || "MEDIUM"}
               </span>
             </div>
 
