@@ -461,54 +461,14 @@ const QuizPlay: React.FC = () => {
     handleSubmitQuiz();
   };
 
-  const handleRetryRequest = async () => {
-    if (!id || !quiz) return;
-    if (isPreview) {
-      window.location.reload();
+  const handleRetryRequest = () => {
+    if (!id) {
+      navigate("/", { replace: true });
       return;
     }
     setRetryError(null);
-
-    const maxAttempts = Number(quiz?.maxAttempts);
-    if (!Number.isFinite(maxAttempts) || maxAttempts <= 0) {
-      window.location.reload();
-      return;
-    }
-
     setRetrying(true);
-    let attemptCount = 0;
-    try {
-      const attempts = await api.attempt.getUserAttempts();
-      attemptCount = Array.isArray(attempts)
-        ? attempts.filter((attempt) => {
-            const attemptQuizId = String(
-              attempt?.quiz?._id ?? attempt?.quiz ?? "",
-            );
-            const isDeleted = Boolean(attempt?.isDeleted);
-            return attemptQuizId === String(id) && !isDeleted;
-          }).length
-        : 0;
-    } catch (err: any) {
-      const status = err?.response?.status;
-      if (status !== 404) {
-        if (status === 401) {
-          setRetryError("Bạn cần đăng nhập để làm lại bài.");
-        } else {
-          setRetryError("Không thể kiểm tra số lượt làm. Vui lòng thử lại.");
-        }
-        setRetrying(false);
-        return;
-      }
-    }
-
-    if (attemptCount >= maxAttempts) {
-      setRetryError("Bạn đã hết lượt làm bài.");
-      setRetrying(false);
-      return;
-    }
-
-    setRetrying(false);
-    window.location.reload();
+    navigate(`/quiz/${id}/start`);
   };
 
   return (

@@ -48,9 +48,7 @@ const Navbar: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center space-x-2">
-            <div className="p-2 bg-purple-600 rounded-lg">
-              <BrainCircuit className="text-white w-6 h-6" />
-            </div>
+            <img src="/favicon.png" alt="QuizAI Logo" className="w-12 h-12" />
             <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-purple-600 to-indigo-600">
               QuizAI
             </span>
