@@ -35,8 +35,8 @@ const ListPoints: React.FC = () => {
             </div>
         );
 
-    if (!data)
-        return <div className="text-center mt-20">Không có dữ liệu</div>;
+    // if (!data)
+    //     return <div className="text-center mt-20">Không có dữ liệu</div>;
 
     return (
         <div className="pt-28 pb-20 px-4 max-w-5xl mx-auto">
@@ -50,7 +50,7 @@ const ListPoints: React.FC = () => {
                     <p className="text-gray-500 font-medium">
                         Tổng số người đã làm:
                         <span className="ml-2 font-black text-purple-600">
-                            {total}
+                            {total || 0}
                         </span>
                     </p>
                 </div>
@@ -74,6 +74,7 @@ const ListPoints: React.FC = () => {
                             </th>
                         </tr>
                     </thead>
+                    { data && data.length > 0 ? (
                     <tbody>
                         {data.map((a: any) => (
                             <tr key={a._id} className="border-t hover:bg-gray-50 transition">
@@ -92,6 +93,15 @@ const ListPoints: React.FC = () => {
                             </tr>
                         ))}
                     </tbody>
+                    ) : (
+                        <tbody>
+                            <tr>
+                                <td colSpan={3} className="px-6 py-4 text-center text-gray-500">
+                                    Chưa có ai làm bài thi này
+                                </td>
+                            </tr>
+                        </tbody>
+                    )}
                 </table>
             </div>
 

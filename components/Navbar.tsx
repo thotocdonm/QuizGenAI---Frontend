@@ -25,7 +25,6 @@ const Navbar: React.FC = () => {
 
   const handleLogout = () => {
     clearToken();
-    localStorage.removeItem("user");
     navigate("/");
   };
 

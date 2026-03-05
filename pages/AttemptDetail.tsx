@@ -34,7 +34,7 @@ const AttemptDetail: React.FC = () => {
 
   if (!attempt || !quiz) return (
     <div className="min-h-screen flex items-center justify-center dark:text-white bg-gray-50 dark:bg-gray-950 font-bold">
-      Không tìm thấy dữ liệu kết quả.
+      Không tìm thấy dữ liệu kết quả bài thi hoặc quiz đã bị xóa
     </div>
   );
 
