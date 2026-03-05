@@ -43,7 +43,7 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 401 && !originalRequest._retry) {
+    if (error.response?.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       const refreshToken = getRefreshToken();
@@ -58,7 +58,7 @@ axiosInstance.interceptors.response.use(
           refreshToken,
         });
 
-        const { accessToken, refreshToken: newRefreshToken } = res.data;
+        const { accessToken, refreshToken: newRefreshToken } = res.data.data;
 
         setToken(accessToken, newRefreshToken);
 
@@ -152,15 +152,15 @@ export const api = {
     },
 
 
-     delete: async (id: string) => {
-    const response = await axiosInstance.delete(`/quiz/${id}`);
-    return response.data;
-  },
+    delete: async (id: string) => {
+      const response = await axiosInstance.delete(`/quiz/${id}`);
+      return response.data;
+    },
 
     getHistory: async () => {
-    const response = await axiosInstance.get('/quiz/history/me');
-    return response.data;
-  },
+      const response = await axiosInstance.get('/quiz/history/me');
+      return response.data;
+    },
 
 
 
@@ -170,7 +170,7 @@ export const api = {
       const response = await axiosInstance.get("/attempt");
       return response.data;
     },
-  
+
     getAttemptById: async (id: string) => {
       const response = await axiosInstance.get(`/attempt/${id}`);
       return response.data;
@@ -181,5 +181,5 @@ export const api = {
       return response.data;
     },
   }
-  
+
 };
