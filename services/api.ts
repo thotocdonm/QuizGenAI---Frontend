@@ -12,8 +12,7 @@ import axios from "axios";
  * API Configuration
  * The base URL is now pulled from the .env file via process.env
  */
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "https://www.quizgenai.io.vn/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000/api';
 
 // Create axios instance
 const axiosInstance = axios.create({
