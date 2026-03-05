@@ -79,7 +79,7 @@ const QuizHistory: React.FC = () => {
           <BarChart3 className="mx-auto w-12 h-12 text-gray-300 dark:text-gray-700 mb-4" />
           <p className="text-gray-500 dark:text-gray-400 font-medium">Bạn chưa thực hiện bài thi nào.</p>
           <button
-            onClick={() => navigate('/generate')}
+            onClick={() => navigate('/quiz/search')}
             className="mt-4 text-purple-600 dark:text-purple-400 font-black hover:underline"
           >
             Làm bài ngay &rarr;

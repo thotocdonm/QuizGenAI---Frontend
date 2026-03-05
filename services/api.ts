@@ -13,7 +13,7 @@ import axios from "axios";
  * The base URL is now pulled from the .env file via process.env
  */
 const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api";
+  import.meta.env.VITE_API_BASE_URL || "https://www.quizgenai.io.vn/api";
 
 // Create axios instance
 const axiosInstance = axios.create({
@@ -43,7 +43,7 @@ axiosInstance.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    if (error.response?.status === 403 && !originalRequest._retry) {
+    if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
 
       const refreshToken = getRefreshToken();

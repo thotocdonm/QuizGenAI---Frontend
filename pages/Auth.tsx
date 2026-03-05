@@ -9,7 +9,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { api } from "../services/api";
-import { setToken } from "@/utils/authUtils";
+import { clearToken, setToken } from "@/utils/authUtils";
 
 const Auth: React.FC = () => {
   const navigate = useNavigate();
@@ -31,7 +31,8 @@ const Auth: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
-
+localStorage.removeItem("user");
+  clearToken();
     try {
       let userData;
       if (isLogin) {

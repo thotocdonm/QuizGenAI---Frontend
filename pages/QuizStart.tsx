@@ -24,10 +24,11 @@ const QuizStart: React.FC = () => {
   const [startError, setStartError] = useState<string | null>(null);
   const [starting, setStarting] = useState(false);
 
-  const handleStart = async () => {
+const handleStart = async () => {
     if (!id) return;
     setStartError(null);
 
+    // 1. Kiểm tra Token trước khi gọi API
     const token = getAccessToken();
     if (!token) {
       const returnTo = `${location.pathname}${location.search}`;
@@ -35,46 +36,33 @@ const QuizStart: React.FC = () => {
       return;
     }
 
-    const maxAttempts = Number(quiz?.maxAttempts);
-    if (Number.isFinite(maxAttempts) && maxAttempts > 0) {
-      setStarting(true);
-      let shouldBlock = false;
-      try {
-        const attempts = await api.attempt.getUserAttempts();
-        const quizId = String(id);
-        const attemptCount = Array.isArray(attempts)
-          ? attempts.filter((attempt) => {
-              const attemptQuizId = String(
-                attempt?.quiz?._id ?? attempt?.quiz ?? "",
-              );
-              const isDeleted = Boolean(attempt?.isDeleted);
-              return attemptQuizId === quizId && !isDeleted;
-            }).length
-          : 0;
+    setStarting(true);
+    try {
+      // 2. Gọi API startQuiz từ Backend (đã khai báo trong controllers/quizController.js)
+      // Giả sử hàm này trong api.ts là api.quiz.start(id)
+      const response = await api.quiz.start(id);
 
-        if (attemptCount >= maxAttempts) {
-          setStartError("Bạn đã hết số lần làm bài.");
-          shouldBlock = true;
-        }
-      } catch (err: any) {
-        const status = err?.response?.status;
-        if (status === 404) {
-          // No attempts yet - allow start
-        } else if (status === 401) {
-          setStartError("Bạn cần đăng nhập để làm bài.");
-          shouldBlock = true;
-        } else {
-          setStartError("Không thể bắt đầu quiz. Vui lòng thử lại.");
-          shouldBlock = true;
-        }
-      } finally {
-        setStarting(false);
+      if (response.success) {
+        // Nếu Server cho phép làm bài (success: true)
+        sessionStorage.setItem(`quiz-start:${id}`, "1");
+        navigate(`/quiz/${id}`, { state: { isFromStart: true } });
       }
-      if (shouldBlock) return;
-    }
+    } catch (err: any) {
+      // 3. Xử lý lỗi trả về từ Backend (ví dụ lỗi 403 khi hết lượt làm)
+      const status = err?.response?.status;
+      const message = err?.response?.data?.message;
 
-    sessionStorage.setItem(`quiz-start:${id}`, "1");
-    navigate(`/quiz/${id}`, { state: { isFromStart: true } });
+      if (status === 403) {
+        // "Bạn đã hết số lần làm bài" từ backend
+        setStartError(message || "Bạn đã hết số lần làm bài.");
+      } else if (status === 401) {
+        setStartError("Bạn cần đăng nhập để làm bài.");
+      } else {
+        setStartError(message || "Không thể bắt đầu quiz. Vui lòng thử lại.");
+      }
+    } finally {
+      setStarting(false);
+    }
   };
 
   useEffect(() => {

@@ -124,38 +124,45 @@ const QuizPlay: React.FC = () => {
   // LOGIC LẤY DỮ LIỆU THẬT TỪ BACKEND
   // ==================================
   useEffect(() => {
-    const fetchQuiz = async () => {
-      try {
-        setLoading(true);
-        if (isPreview) {
-          const response = await api.quiz.getById(id as string);
-          if (response) {
-            setQuiz(response);
-          }
-        } else {
-          const publicQuiz = await api.quiz.getPublic(id as string);
-          let resolvedQuiz = publicQuiz;
+  const fetchQuiz = async () => {
+    try {
+      setLoading(true);
+      
+      // 1. Lấy thông tin user hiện tại từ localStorage
+      const user = JSON.parse(localStorage.getItem("user") || "null");
+      const currentUserId = user?.id || user?._id;
 
-          // Try enriching payload for owner (public endpoint does not include questionType/correctAnswer).
-          try {
-            const ownerQuiz = await api.quiz.getById(id as string);
-            if (ownerQuiz?.questions?.length) resolvedQuiz = ownerQuiz;
-          } catch {
-            // Non-owner users will receive 403 here; keep public quiz.
-          }
+      // 2. LUÔN LUÔN lấy bản công khai trước (Ai cũng có quyền xem đề)
+      const publicQuiz = await api.quiz.getPublic(id as string);
+      if (!publicQuiz) return;
 
-          if (resolvedQuiz) {
-            setQuiz(resolvedQuiz);
-          }
+      // Giả sử dữ liệu trả về nằm trong publicQuiz.data hoặc publicQuiz
+      const quizData = publicQuiz.data || publicQuiz;
+      let resolvedQuiz = quizData;
+
+      // 3. CHỈ gọi getById nếu là chủ sở hữu hoặc đang Preview
+      const quizOwnerId = quizData.owner || quizData.owner?._id;
+      const isOwner = currentUserId && quizOwnerId && currentUserId === quizOwnerId;
+
+      if (isPreview || isOwner) {
+        try {
+          // Chỉ chủ sở hữu mới gọi dòng này, người lạ KHÔNG gọi nên không bị lỗi 403
+          const ownerQuiz = await api.quiz.getById(id as string);
+          if (ownerQuiz) resolvedQuiz = ownerQuiz.data || ownerQuiz;
+        } catch (e) {
+          console.warn("Không thể lấy bản đầy đủ, dùng bản công khai.");
         }
-      } catch (err) {
-        console.error("Lỗi lấy chi tiết quiz (public):", err);
-      } finally {
-        setLoading(false);
       }
-    };
-    fetchQuiz();
-  }, [id, isPreview]);
+
+      setQuiz(resolvedQuiz);
+    } catch (err) {
+      console.error("Lỗi lấy bài Quiz:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+  fetchQuiz();
+}, [id, isPreview]);
   // ============================================================
 
   useEffect(() => {
