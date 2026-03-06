@@ -129,7 +129,7 @@ const Navbar: React.FC = () => {
                   value={searchKeyword}
                   onChange={(event) => setSearchKeyword(event.target.value)}
                   placeholder="Enter keywords to search for quizzes..."
-                  className="w-56 lg:w-72 bg-transparent text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
+                  className="w-56 lg:w-72 bg-transparent text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none"
                 />
               </div>
               <button
@@ -305,7 +305,7 @@ const Navbar: React.FC = () => {
                     value={searchKeyword}
                     onChange={(event) => setSearchKeyword(event.target.value)}
                     placeholder="Search for quizzes to play..."
-                    className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500"
+                    className="flex-1 bg-transparent text-sm text-gray-700 dark:text-gray-200 placeholder-gray-400 dark:placeholder-gray-500 outline-none focus:outline-none focus:ring-0 focus-visible:outline-none"
                   />
                 </div>
                 <button
